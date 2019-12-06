@@ -63,7 +63,7 @@ func AliPayTradeRefund(orderId string, moneyFee int64) bool {
 		return false
 	}
 	log.Info("阿里退款返回aliRsp:%#v", *aliRsp)
-	if aliRsp.AlipayTradeRefundResponse.Code == "10000" {
+	if aliRsp.Response.Code == "10000" {
 		log.Debug("阿里退款成功:%#v", aliRsp)
 		return true
 	} else {
@@ -92,13 +92,13 @@ func AlipayFundTransToaccountTransfer(account string, moneyFee int64, desc strin
 	body.Set("payee_real_name", "收钱人名字")
 	body.Set("remark", desc)
 	//创建订单
-	aliRsp, err := AliPayClient.AlipayFundTransToaccountTransfer(body)
+	aliRsp, err := AliPayClient.AliPayFundTransToaccountTransfer(body)
 	if err != nil {
 		log.Error("阿里转账支付错误err:", err)
 		return
 	}
 	log.Debug("阿里转账支付返回aliRsp:%#v", *aliRsp)
-	if aliRsp.AlipayFundTransToaccountTransferResponse.Code == "10000" {
+	if aliRsp.Response.Code == "10000" {
 		log.Debug("支付宝转账成功:%#v", aliRsp)
 	} else {
 		log.Error("支付宝转账失败:%#v", aliRsp)
