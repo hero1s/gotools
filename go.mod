@@ -11,6 +11,7 @@ require (
 	github.com/gansidui/nearest v0.0.0-20141019122829-a5d0cde6ef14
 	github.com/garyburd/redigo v1.6.0
 	github.com/go-redis/redis v6.14.2+incompatible
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/iGoogle-ink/gopay v1.4.4
 	github.com/onsi/ginkgo v1.10.3 // indirect
@@ -21,5 +22,6 @@ require (
 	github.com/sluu99/uuid v0.0.0-20130306162636-1dd34a9ad6c0
 	github.com/zheng-ji/goSnowFlake v0.0.0-20180906112711-fc763800eec9
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
