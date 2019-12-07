@@ -7,6 +7,7 @@ require (
 	github.com/astaxie/beego v1.12.0
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/denverdino/aliyungo v0.0.0-20191128015008-acd8035bbb1d
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gansidui/geohash v0.0.0-20141019080235-ebe5ba447f34
 	github.com/gansidui/nearest v0.0.0-20141019122829-a5d0cde6ef14
 	github.com/garyburd/redigo v1.6.0
