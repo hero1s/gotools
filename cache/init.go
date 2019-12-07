@@ -3,15 +3,14 @@ package cache
 import (
 	"encoding/json"
 	"errors"
-	"github.com/astaxie/beego/cache"
 	"github.com/go-redis/redis"
 	"github.com/hero1s/gotools/log"
 	"time"
 )
 
 var (
-	MemCache   cache.Cache
-	RedisCache cache.Cache
+	MemCache   Cache
+	RedisCache Cache
 	Redis      *redis.Client
 )
 
@@ -51,16 +50,16 @@ func SubscribeMessage(channel string, msg_func func(msg *redis.Message)) {
 
 func InitCache(host, password, defaultKey string) error {
 	var err error
-	MemCache, err = cache.NewCache("memory", `{"interval":60}`)
+	MemCache, err = NewCache("memory", `{"interval":60}`)
 	if err != nil {
 		return err
 	}
-	RedisCache, err = cache.NewCache("redis",
+	RedisCache, err = NewCache("redis",
 		`{"conn":"`+host+`", "password":"`+password+`", "key":"`+defaultKey+`"}`)
 	return err
 }
 
-func SetCache(cc cache.Cache, key string, value interface{}, timeout time.Duration) error {
+func SetCache(cc Cache, key string, value interface{}, timeout time.Duration) error {
 	data, err := EncodeJson(value)
 	if err != nil {
 		return err
@@ -78,7 +77,7 @@ func SetCache(cc cache.Cache, key string, value interface{}, timeout time.Durati
 	return cc.Put(key, data, timeout)
 }
 
-func GetCache(cc cache.Cache, key string, to interface{}) error {
+func GetCache(cc Cache, key string, to interface{}) error {
 	if cc == nil {
 		return errors.New("cc is nil")
 	}
@@ -99,7 +98,7 @@ func GetCache(cc cache.Cache, key string, to interface{}) error {
 
 }
 
-func DelCache(cc cache.Cache, key string) error {
+func DelCache(cc Cache, key string) error {
 	if cc == nil {
 		return errors.New("cc is nil")
 	}
@@ -114,7 +113,7 @@ func DelCache(cc cache.Cache, key string) error {
 	return cc.Delete(key)
 }
 
-func IsExist(cc cache.Cache, key string) bool {
+func IsExist(cc Cache, key string) bool {
 	if cc == nil {
 		return false
 	}
@@ -128,7 +127,7 @@ func IsExist(cc cache.Cache, key string) bool {
 }
 
 // increase cached int value by key, as a counter.
-func Incr(cc cache.Cache, key string) error {
+func Incr(cc Cache, key string) error {
 	if cc == nil {
 		return errors.New("cc is nil")
 	}
@@ -142,7 +141,7 @@ func Incr(cc cache.Cache, key string) error {
 }
 
 // decrease cached int value by key, as a counter.
-func Decr(cc cache.Cache, key string) error {
+func Decr(cc Cache, key string) error {
 	if cc == nil {
 		return errors.New("cc is nil")
 	}
@@ -156,7 +155,7 @@ func Decr(cc cache.Cache, key string) error {
 }
 
 // clear all cache.
-func ClearAll(cc cache.Cache, ) error {
+func ClearAll(cc Cache, ) error {
 	if cc == nil {
 		return errors.New("cc is nil")
 	}
