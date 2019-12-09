@@ -38,6 +38,9 @@ func InitAliOSS(accessKey, accessKeySecret, ossRoot, bucket, roleacs, ossRegion 
 	roleAcs = roleacs
 	region = ossRegion
 }
+func GetOssEndpoint() string {
+	return ossUrlRoot
+}
 func GetOssPathUrl() string {
 	return bucketName + "." + ossUrlRoot
 }
