@@ -160,3 +160,17 @@ func GetLimitAndPageSize(params ...int64) (int64, int64) {
 	}
 	return 0, DefaultPageSize
 }
+
+func GetLimitAndPageSizeByMaxSize(maxIndex, maxSize int64, params ...int64) (int64, int64) {
+	if len(params) >= 2 {
+		pageIndex, pageSize := params[0], params[1]
+		if pageIndex > maxIndex || pageIndex <= 0 {
+			pageIndex = DefaultPageIndex
+		}
+		if pageSize > maxSize || pageSize <= 0 {
+			pageSize = DefaultPageSize
+		}
+		return (pageIndex) * pageSize, pageSize
+	}
+	return 0, DefaultPageSize
+}
