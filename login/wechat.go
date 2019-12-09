@@ -44,7 +44,7 @@ func GetWeChatUserInfo(accessToken, openID string) (*WeChatInfo, error) {
 }
 
 //一些有关微信方面的操作
-const (
+var (
 	//h5方面的微信,游戏客户端的不需要下面这两个参数
 	WeChatAppID = "wxbc1ba2a3d45458c3"
 	WeChatAppSecret   = "15ba90574a2d49069a7261f4f7e5d5ad"
