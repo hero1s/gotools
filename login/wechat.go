@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
+	"github.com/hero1s/gotools/cache"
 	"github.com/hero1s/gotools/log"
 	"github.com/hero1s/gotools/login/fetch"
 	"io"
@@ -43,10 +44,10 @@ func GetWeChatUserInfo(accessToken, openID string) (*WeChatInfo, error) {
 }
 
 //一些有关微信方面的操作
-var (
+const (
 	//h5方面的微信,游戏客户端的不需要下面这两个参数
-	WeChatAppID     = "wxbc1ba2a3d45458c3"
-	WeChatAppSecret = "15ba90574a2d49069a7261f4f7e5d5ad"
+	WeChatAppID = "wxbc1ba2a3d45458c3"
+	WeChatAppSecret   = "15ba90574a2d49069a7261f4f7e5d5ad"
 )
 
 type WeChatToken struct {
@@ -96,27 +97,38 @@ type WeChatSign struct {
 
 func getAccessToken() (string, error) {
 	var result AccessToken
+	keyAccessToken := fmt.Sprintf("access_token_%s", WeChatAppID)
 	var accessToken string
 	var err error
-	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
-		WeChatAppID, WeChatAppSecret)
-	var body []byte
-	body, err = fetch.Cmd(fetch.Request{
-		Method: "GET",
-		URL:    url,
-	})
-	if err != nil {
-		return "", err
+	val := cache.MemCache.GetString(keyAccessToken)
+	if val == "" { //doesn't exist
+		url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
+			WeChatAppID, WeChatAppSecret)
+		var body []byte
+		body, err = fetch.Cmd(fetch.Request{
+			Method: "GET",
+			URL:    url,
+		})
+		if err != nil {
+			return "", err
+		}
+		err = json.Unmarshal(body, &result)
+		if err != nil {
+			return "", err
+		}
+		if result.ErrCode != 0 {
+			err = fmt.Errorf("获取微信access_token失败:%v\n,状态码:%v", result.ErrMsg, result.ErrCode)
+			return "", err
+		}
+		accessToken = result.AccessToken
+		log.Debug(fmt.Sprintf("access token expire:%v", result.ExpiresIn))
+		err = cache.MemCache.Put(keyAccessToken, result.AccessToken, time.Duration(result.ExpiresIn-500)*time.Second)
+		log.Debug(fmt.Sprintf("从微信服务器里获取accessToken成功:%v,err:%v", accessToken, err))
+	} else {
+		//accessToken = string(val.([]uint8))
+		accessToken = val
+		log.Debug(fmt.Sprintf("从缓存里获取accessToken成功:%v", accessToken))
 	}
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return "", err
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("获取微信access_token失败:%v\n,状态码:%v", result.ErrMsg, result.ErrCode)
-		return "", err
-	}
-	accessToken = result.AccessToken
 	return accessToken, err
 }
 func GetWeChatTicket(uri string) (*WeChatSign, error) {
@@ -131,27 +143,34 @@ func getWeChatTicket(accessToken, uri string) (*WeChatSign, error) {
 	var result WeChatTicket
 	var ticket string
 	var err error
-
-	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%v&type=jsapi", accessToken)
-	var body []byte
-	body, err = fetch.Cmd(fetch.Request{
-		Method: "GET",
-		URL:    url,
-	})
-	if err != nil {
-		return nil, err
+	keyTicket := fmt.Sprintf("jsapi_ticket_%s", WeChatAppID)
+	val := cache.MemCache.GetString(keyTicket)
+	if val == "" { //doesn't exist
+		url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%v&type=jsapi", accessToken)
+		var body []byte
+		body, err = fetch.Cmd(fetch.Request{
+			Method: "GET",
+			URL:    url,
+		})
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(body, &result)
+		if err != nil {
+			return nil, err
+		}
+		if result.ErrCode != 0 {
+			err = fmt.Errorf("获取微信ticket:%v\n,状态码:%v", result.ErrMsg, result.ErrCode)
+			return nil, err
+		}
+		ticket = result.Ticket
+		err = cache.MemCache.Put(keyTicket, result.Ticket, time.Duration(result.ExpiresIn-500)*time.Second)
+		log.Debug(fmt.Sprintf("从微信服务器里获取ticket成功:%v,err:%v,expirein:%v", ticket, err, result.ExpiresIn))
+	} else {
+		ticket = val
+		//ticket = string(val.([]uint8))
+		log.Debug(fmt.Sprintf("从缓存里获取ticket成功:%v", ticket))
 	}
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return nil, err
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("获取微信ticket:%v\n,状态码:%v", result.ErrMsg, result.ErrCode)
-		return nil, err
-	}
-	ticket = result.Ticket
-	log.Debug(fmt.Sprintf("从微信服务器里获取ticket成功:%v,err:%v,expirein:%v", ticket, err, result.ExpiresIn))
-
 	nonceStr := RandomStr(16)
 	timestamp := time.Now().Unix()
 	ticketStr := ticket
