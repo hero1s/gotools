@@ -62,7 +62,7 @@ func GetImagePath(prePath, filename string) string {
 func GenerateOssToken(path string) (sts.AssumedRoleUserCredentials, error) {
 	client := sts.NewClient(accessKeyId_oss, accessKeySecret_oss)
 	var req sts.AssumeRoleRequest
-	req.DurationSeconds = 600
+	req.DurationSeconds = 1200 //20分钟
 	req.RoleArn = roleAcs
 	req.Policy = createOssPolicy(path)
 	req.RoleSessionName = "client"
