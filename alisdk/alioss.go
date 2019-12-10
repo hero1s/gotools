@@ -6,6 +6,7 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/denverdino/aliyungo/ram"
 	"github.com/denverdino/aliyungo/sts"
+	"github.com/hero1s/gotools/log"
 	"io"
 	"path/filepath"
 )
@@ -61,11 +62,11 @@ func GetImagePath(prePath, filename string) string {
 func GenerateOssToken(path string) (sts.AssumedRoleUserCredentials, error) {
 	client := sts.NewClient(accessKeyId_oss, accessKeySecret_oss)
 	var req sts.AssumeRoleRequest
-	req.DurationSeconds = 3600
+	req.DurationSeconds = 600
 	req.RoleArn = roleAcs
 	req.Policy = createOssPolicy(path)
 	req.RoleSessionName = "client"
-
+	log.Debug("获取临时sts权限:%v",req.Policy)
 	resp, err := client.AssumeRole(req)
 	return resp.Credentials, err
 }
@@ -73,9 +74,9 @@ func GenerateOssToken(path string) (sts.AssumedRoleUserCredentials, error) {
 // 权限控制策略文件
 func createOssPolicy(path string) string {
 	var policy string
-	//'{"Version":"1","Statement":[{"Effect":"Allow","Action":["oss:PutObject"],"Resource":["acs:oss:*:*:ram-test-app/usr001/*"]}]}'
-	policy = `{"Version":"1","Statement":[{"Effect":"Allow","Action":["oss:*"],"Resource":["acs:oss:*:*:*/*"]}]}`
-	//policy = `{"Version":"1","Statement":[{"Effect":"Allow","Action":["oss:*"],"Resource":["acs:oss:*:*:` + bucketName + `/*"]}]}`
+	//policy = `{"Version":"1","Statement":[{"Effect":"Allow","Action":["oss:PutObject"],"Resource":["acs:oss:*:*:ram-test-app/usr001/*"]}]}`
+	//policy = `{"Version":"1","Statement":[{"Effect":"Allow","Action":["oss:*"],"Resource":["acs:oss:*:*:*/*"]}]}`
+	policy = `{"Version":"1","Statement":[{"Effect":"Allow","Action":["oss:*"],"Resource":["acs:oss:*:*:` + bucketName + "/" + path + `/*"]}]}`
 	return policy
 }
 
