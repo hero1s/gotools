@@ -14,7 +14,7 @@ require (
 	github.com/go-redis/redis v6.14.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/howeyc/fsnotify v0.9.0
-	github.com/iGoogle-ink/gopay v1.4.4
+	github.com/iGoogle-ink/gopay v1.3.9
 	github.com/onsi/ginkgo v1.10.3 // indirect
 	github.com/onsi/gomega v1.7.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
@@ -26,3 +26,5 @@ require (
 	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
+
+replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3
