@@ -16,7 +16,7 @@ func InitWechatPay(isProd bool) {
 }
 
 //微信预下单
-func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo,openid string) (map[string]string, error) {
+func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, openid string) (map[string]string, error) {
 	//初始化参数Map
 	body := make(gopay.BodyMap)
 	body.Set("nonce_str", gopay.GetRandomString(32))
@@ -27,7 +27,7 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo,openi
 	body.Set("notify_url", PayParam.WechatPay.WeChatCallbackUrl)
 	body.Set("trade_type", tradeType)
 	body.Set("device_info", deviceInfo)
-	body.Set("openid",openid)
+	body.Set("openid", openid)
 	body.Set("sign_type", gopay.SignType_MD5)
 
 	//请求支付下单，成功后得到结果
@@ -46,8 +46,19 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo,openi
 	c["package"] = "Sign=WXPay"
 	c["noncestr"] = wxRsp.NonceStr
 	timeStamp := strconv.FormatInt(time.Now().Unix(), 10)
-	sign := gopay.GetAppPaySign(wxRsp.Appid, "", wxRsp.NonceStr, wxRsp.PrepayId, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
-	c["paySign"] = sign
+	if tradeType == gopay.TradeType_App {
+		sign := gopay.GetAppPaySign(wxRsp.Appid, "", wxRsp.NonceStr, wxRsp.PrepayId, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
+		c["paySign"] = sign
+	}else if tradeType == gopay.TradeType_JsApi {
+		pac := "prepay_id=" + wxRsp.PrepayId
+		sign := gopay.GetMiniPaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
+		c["paySign"] = sign
+	}else if tradeType == gopay.TradeType_H5 {
+		pac := "prepay_id=" + wxRsp.PrepayId
+		sign := gopay.GetH5PaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
+		c["paySign"] = sign
+	}
+
 	c["timestamp"] = timeStamp
 
 	return c, err
