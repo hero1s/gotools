@@ -16,7 +16,7 @@ func InitWechatPay(isProd bool) {
 }
 
 //微信预下单
-func UnifiedOrder(moneyFee int64, describe, orderId, trade_type, device_info string) (map[string]string, error) {
+func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo,openid string) (map[string]string, error) {
 	//初始化参数Map
 	body := make(gopay.BodyMap)
 	body.Set("nonce_str", gopay.GetRandomString(32))
@@ -25,8 +25,9 @@ func UnifiedOrder(moneyFee int64, describe, orderId, trade_type, device_info str
 	body.Set("total_fee", moneyFee) //单位分
 	body.Set("spbill_create_ip", utils.LocalIP())
 	body.Set("notify_url", PayParam.WechatPay.WeChatCallbackUrl)
-	body.Set("trade_type", trade_type)
-	body.Set("device_info", device_info)
+	body.Set("trade_type", tradeType)
+	body.Set("device_info", deviceInfo)
+	body.Set("openid",openid)
 	body.Set("sign_type", gopay.SignType_MD5)
 
 	//请求支付下单，成功后得到结果
