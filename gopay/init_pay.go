@@ -17,19 +17,20 @@ type WeChatPayParam struct {
 	WeChatP12File     string `json:"we_chat_p12_file" desc:"p12证书路径"`
 }
 type AliPayParam struct {
-	AliProductCode    string `json:"ali_product_code" desc:"产品码"`
-	AliAppId          string `json:"ali_app_id" desc:"应用ID"`
-	AliPartnerId      string `json:"ali_partner_id" desc:"支付宝合作身份ID"`
-	AliSellerId       string `json:"ali_seller_id" desc:"卖家支付宝用户号"`
-	AliAppCallbackUrl string `json:"ali_app_callback_url" desc:"阿里支付回调"`
-	AliReturnUrl      string `json:"ali_return_url" desc:""`
+	AliProductCode       string `json:"ali_product_code" desc:"产品码"`
+	AliAppId             string `json:"ali_app_id" desc:"应用ID"`
+	AliPartnerId         string `json:"ali_partner_id" desc:"支付宝合作身份ID"`
+	AliSellerId          string `json:"ali_seller_id" desc:"卖家支付宝用户号"`
+	AliAppCallbackUrl    string `json:"ali_app_callback_url" desc:"阿里支付回调"`
+	AliReturnUrl         string `json:"ali_return_url" desc:""`
 	AliPayPublicKeyFile  string `json:"ali_pay_public_key_file" desc:"支付宝公钥"`
 	AliAppPrivateKeyFile string `json:"ali_app_private_key_file" desc:"应用私钥"`
 }
 
 type PayParamCfg struct {
-	WechatPay WeChatPayParam `json:"wechat_pay" desc:"微信支付参数"`
-	AliPay    AliPayParam    `json:"ali_pay" desc:"支付包支付参数"`
+	WechatPay   WeChatPayParam `json:"wechat_pay" desc:"微信支付参数"`
+	WechatJsPay WeChatPayParam `json:"wechat_js_pay" desc:"微信JSAPI支付参数"`
+	AliPay      AliPayParam    `json:"ali_pay" desc:"支付包支付参数"`
 }
 
 var (

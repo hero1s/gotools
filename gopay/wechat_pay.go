@@ -9,10 +9,15 @@ import (
 )
 
 var WeChatPayClient *gopay.WeChatClient
+var WeChatJsApiPayClient *gopay.WeChatClient
+
 
 func InitWechatPay(isProd bool) {
 	WeChatPayClient = gopay.NewWeChatClient(PayParam.WechatPay.WeChatAppId, PayParam.WechatPay.WeChatMchId, PayParam.WechatPay.WeChatKey, isProd)
 	WeChatPayClient.SetCountry(gopay.China)
+
+	WeChatJsApiPayClient = gopay.NewWeChatClient(PayParam.WechatJsPay.WeChatAppId, PayParam.WechatJsPay.WeChatMchId, PayParam.WechatJsPay.WeChatKey, isProd)
+	WeChatJsApiPayClient.SetCountry(gopay.China)
 }
 
 //微信预下单
@@ -27,12 +32,18 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 	body.Set("notify_url", PayParam.WechatPay.WeChatCallbackUrl)
 	body.Set("trade_type", tradeType)
 	body.Set("device_info", deviceInfo)
-	body.Set("openid", openid)
 	body.Set("sign_type", gopay.SignType_MD5)
 
 	//请求支付下单，成功后得到结果
 	var c = make(map[string]string)
-	wxRsp, err := WeChatPayClient.UnifiedOrder(body)
+	var wxRsp *gopay.WeChatUnifiedOrderResponse
+	var err error
+	if tradeType == gopay.TradeType_JsApi {
+		body.Set("openid", openid)
+		wxRsp, err = WeChatJsApiPayClient.UnifiedOrder(body)
+	}else {
+		wxRsp, err = WeChatPayClient.UnifiedOrder(body)
+	}
 	if err != nil {
 		log.Error("微信预下单:%#v  \n支付失败Error:%v", body, err.Error())
 		return c, err
