@@ -11,13 +11,24 @@ import (
 var WeChatPayClient *gopay.WeChatClient
 var WeChatJsApiPayClient *gopay.WeChatClient
 
-
 func InitWechatPay(isProd bool) {
 	WeChatPayClient = gopay.NewWeChatClient(PayParam.WechatPay.WeChatAppId, PayParam.WechatPay.WeChatMchId, PayParam.WechatPay.WeChatKey, isProd)
 	WeChatPayClient.SetCountry(gopay.China)
 
 	WeChatJsApiPayClient = gopay.NewWeChatClient(PayParam.WechatJsPay.WeChatAppId, PayParam.WechatJsPay.WeChatMchId, PayParam.WechatJsPay.WeChatKey, isProd)
 	WeChatJsApiPayClient.SetCountry(gopay.China)
+}
+func getPayClient(tradeType string) *gopay.WeChatClient {
+	if tradeType == gopay.TradeType_JsApi {
+		return WeChatJsApiPayClient
+	}
+	return WeChatPayClient
+}
+func getPayParam(tradeType string) WeChatPayParam {
+	if tradeType == gopay.TradeType_JsApi {
+		return PayParam.WechatJsPay
+	}
+	return PayParam.WechatPay
 }
 
 //微信预下单
@@ -29,21 +40,17 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 	body.Set("out_trade_no", orderId)
 	body.Set("total_fee", moneyFee) //单位分
 	body.Set("spbill_create_ip", utils.LocalIP())
-	body.Set("notify_url", PayParam.WechatPay.WeChatCallbackUrl)
+	body.Set("notify_url", getPayParam(tradeType).WeChatCallbackUrl)
 	body.Set("trade_type", tradeType)
 	body.Set("device_info", deviceInfo)
 	body.Set("sign_type", gopay.SignType_MD5)
 
 	//请求支付下单，成功后得到结果
 	var c = make(map[string]string)
-	var wxRsp *gopay.WeChatUnifiedOrderResponse
-	var err error
 	if tradeType == gopay.TradeType_JsApi {
 		body.Set("openid", openid)
-		wxRsp, err = WeChatJsApiPayClient.UnifiedOrder(body)
-	}else {
-		wxRsp, err = WeChatPayClient.UnifiedOrder(body)
 	}
+	wxRsp, err := getPayClient(tradeType).UnifiedOrder(body)
 	if err != nil {
 		log.Error("微信预下单:%#v  \n支付失败Error:%v", body, err.Error())
 		return c, err
@@ -58,15 +65,15 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 	c["noncestr"] = wxRsp.NonceStr
 	timeStamp := strconv.FormatInt(time.Now().Unix(), 10)
 	if tradeType == gopay.TradeType_App {
-		sign := gopay.GetAppPaySign(wxRsp.Appid, "", wxRsp.NonceStr, wxRsp.PrepayId, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
+		sign := gopay.GetAppPaySign(wxRsp.Appid, "", wxRsp.NonceStr, wxRsp.PrepayId, gopay.SignType_MD5, timeStamp, getPayParam(tradeType).WeChatKey)
 		c["paySign"] = sign
-	}else if tradeType == gopay.TradeType_JsApi {
+	} else if tradeType == gopay.TradeType_JsApi {
 		pac := "prepay_id=" + wxRsp.PrepayId
-		sign := gopay.GetMiniPaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
+		sign := gopay.GetMiniPaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, getPayParam(tradeType).WeChatKey)
 		c["paySign"] = sign
-	}else if tradeType == gopay.TradeType_H5 {
+	} else if tradeType == gopay.TradeType_H5 {
 		pac := "prepay_id=" + wxRsp.PrepayId
-		sign := gopay.GetH5PaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, PayParam.WechatPay.WeChatKey)
+		sign := gopay.GetH5PaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, getPayParam(tradeType).WeChatKey)
 		c["paySign"] = sign
 	}
 
@@ -84,7 +91,7 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 // 撤销订单：client.Reverse()
 
 // 申请退款：client.Refund()
-func Refund(orderId string, moneyFee int64) bool {
+func Refund(orderId string, moneyFee int64, tradeType string) bool {
 	body := make(gopay.BodyMap)
 	body.Set("out_trade_no", orderId)
 	body.Set("nonce_str", gopay.GetRandomString(32))
@@ -98,7 +105,7 @@ func Refund(orderId string, moneyFee int64) bool {
 	//    certFilePath：cert证书路径
 	//    keyFilePath：Key证书路径
 	//    pkcs12FilePath：p12证书路径
-	wxRsp, err := WeChatPayClient.Refund(body, PayParam.WechatPay.WeChatCertFile, PayParam.WechatPay.WeChatKeyFile, PayParam.WechatPay.WeChatP12File)
+	wxRsp, err := getPayClient(tradeType).Refund(body, getPayParam(tradeType).WeChatCertFile, getPayParam(tradeType).WeChatKeyFile, getPayParam(tradeType).WeChatP12File)
 	if err != nil {
 		log.Error("微信退款Error:%v", err)
 		return false
@@ -122,7 +129,7 @@ func Refund(orderId string, moneyFee int64) bool {
 // 拉取订单评价数据：client.BatchQueryComment()
 
 // 企业向微信用户个人付款：client.Transfer()
-func Transfer(orderId, openid, userName, desc string, moneyFee int64) {
+func Transfer(orderId, openid, userName, desc string, moneyFee int64, tradeType string) {
 	nonceStr := gopay.GetRandomString(32)
 	log.Info("partnerTradeNo:%v", orderId)
 	//初始化参数结构体
@@ -141,7 +148,7 @@ func Transfer(orderId, openid, userName, desc string, moneyFee int64) {
 	//    certFilePath：cert证书路径
 	//    keyFilePath：Key证书路径
 	//    pkcs12FilePath：p12证书路径
-	wxRsp, err := WeChatPayClient.Transfer(body, PayParam.WechatPay.WeChatCertFile, PayParam.WechatPay.WeChatKeyFile, PayParam.WechatPay.WeChatP12File)
+	wxRsp, err := getPayClient(tradeType).Transfer(body, getPayParam(tradeType).WeChatCertFile, getPayParam(tradeType).WeChatKeyFile, getPayParam(tradeType).WeChatP12File)
 	if err != nil {
 		log.Error("微信付款Error:", err)
 		return
@@ -156,7 +163,7 @@ func Transfer(orderId, openid, userName, desc string, moneyFee int64) {
 }
 
 //验证微信回调
-func VerifyWeChatSign(notifyReq *gopay.WeChatNotifyRequest) (ok bool, err error) {
+func VerifyWeChatSign(notifyReq *gopay.WeChatNotifyRequest,tradeType string) (ok bool, err error) {
 	//验签操作
-	return gopay.VerifyWeChatSign(PayParam.WechatPay.WeChatKey, gopay.SignType_MD5, notifyReq)
+	return gopay.VerifyWeChatSign(getPayParam(tradeType).WeChatKey, gopay.SignType_MD5, notifyReq)
 }
