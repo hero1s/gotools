@@ -65,7 +65,7 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 	c["noncestr"] = wxRsp.NonceStr
 	timeStamp := strconv.FormatInt(time.Now().Unix(), 10)
 	if tradeType == gopay.TradeType_App {
-		sign := gopay.GetAppPaySign(wxRsp.Appid, "", wxRsp.NonceStr, wxRsp.PrepayId, gopay.SignType_MD5, timeStamp, getPayParam(tradeType).WeChatKey)
+		sign := gopay.GetAppPaySign(wxRsp.Appid, wxRsp.MchId, wxRsp.NonceStr, wxRsp.PrepayId, gopay.SignType_MD5, timeStamp, getPayParam(tradeType).WeChatKey)
 		c["paySign"] = sign
 	} else if tradeType == gopay.TradeType_JsApi {
 		pac := "prepay_id=" + wxRsp.PrepayId
