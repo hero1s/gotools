@@ -58,6 +58,8 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 		log.Info("微信预下单wxRsp:%#v", *wxRsp)
 	}
 
+	wxRsp.NonceStr = gopay.GetRandomString(32) // 重新生成随机码
+
 	c["appid"] = wxRsp.Appid
 	c["partnerid"] = wxRsp.MchId
 	c["prepayid"] = wxRsp.PrepayId
@@ -163,7 +165,7 @@ func Transfer(orderId, openid, userName, desc string, moneyFee int64, tradeType 
 }
 
 //验证微信回调
-func VerifyWeChatSign(notifyReq *gopay.WeChatNotifyRequest,tradeType string) (ok bool, err error) {
+func VerifyWeChatSign(notifyReq *gopay.WeChatNotifyRequest, tradeType string) (ok bool, err error) {
 	//验签操作
 	return gopay.VerifyWeChatSign(getPayParam(tradeType).WeChatKey, gopay.SignType_MD5, notifyReq)
 }

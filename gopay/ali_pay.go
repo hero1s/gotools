@@ -19,8 +19,40 @@ func InitAliPay(isProd bool) {
 }
 
 //* 手机网站支付接口2.0（手机网站支付）：client.AliPayTradeWapPay()
+func AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl string) (string, error) {
+	//请求参数
+	body := make(gopay.BodyMap)
+	body.Set("subject", describe)
+	body.Set("out_trade_no", orderId)
+	body.Set("quit_url", quitUrl)
+	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
+	body.Set("product_code", "QUICK_WAP_WAY")
+	//手机网站支付请求
+	payUrl, err := AliPayClient.AliPayTradeWapPay(body)
+	if err != nil {
+		log.Error("page pay err:", err)
+		return payUrl, err
+	}
+	return payUrl, err
+}
 
 //* 统一收单下单并支付页面接口（电脑网站支付）：client.AliPayTradePagePay()
+func AliPayTradePagePay(moneyFee int64, describe, orderId string) (string, error) {
+	//请求参数
+	body := make(gopay.BodyMap)
+	body.Set("subject", describe)
+	body.Set("out_trade_no", orderId)
+	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
+	body.Set("product_code", "FAST_INSTANT_TRADE_PAY")
+
+	//电脑网站支付请求
+	payUrl, err := AliPayClient.AliPayTradePagePay(body)
+	if err != nil {
+		log.Error("page pay err:", err)
+		return payUrl, err
+	}
+	return payUrl, err
+}
 
 //* APP支付接口2.0（APP支付）：client.AliPayTradeAppPay()
 func AliPayTradeAppPay(moneyFee int64, describe, orderId string) (string, error) {
