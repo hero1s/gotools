@@ -58,8 +58,6 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 		log.Info("微信预下单wxRsp:%#v", *wxRsp)
 	}
 
-	wxRsp.NonceStr = gopay.GetRandomString(32) // 重新生成随机码
-
 	c["appid"] = wxRsp.Appid
 	c["partnerid"] = wxRsp.MchId
 	c["prepayid"] = wxRsp.PrepayId
