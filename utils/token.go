@@ -28,8 +28,9 @@ func SetTokenSecretKey(secretKey string, exporeHour int) {
 
 type CustomClaims struct {
 	jwt.StandardClaims
-	Uid    uint64 `json:"uid"`
-	RoleId uint64 `json:"role_id"`
+	Uid      uint64 `json:"uid"`
+	RoleId   uint64 `json:"role_id"`
+	UserData string `json:"user_data"`
 }
 
 // generate token

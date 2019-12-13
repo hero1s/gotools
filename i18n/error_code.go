@@ -74,6 +74,7 @@ var (
 	//逻辑错误
 	RecordNotFound = errors.New("2000")
 	FrozenUser     = errors.New("2001")
+	FrozenDevice   = errors.New("2002")
 
 	Unauthorized     = errors.New("4000")
 	LoginFail        = errors.New("4001")
@@ -98,6 +99,7 @@ var ErrorCode = map[error][]string{
 	ParamsNotFit:        {"params not fit", "参数不符合要求"},
 	ParamsCannotBeEmpty: {"params cannot be empty", "参数不能为空"},
 	FrozenUser:          {"frozen user", "用户已封号"},
+	FrozenDevice:        {"frozen device", "该设备已被禁用"},
 	RecordNotFound:      {"record not found", "记录不存在"},
 	Unauthorized:        {"unauthorized access", "未授权访问"},
 	LoginFail:           {"invalid username or password", "账号或密码不正确"},
