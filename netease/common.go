@@ -15,10 +15,6 @@ var (
 	Code500 = errors.New("500")
 )
 
-type Code struct {
-	Code int64  `json:"code"`
-	Desc string `json:"desc"`
-}
 type QueryUserRoomIdsType struct {
 	Code uint64 `json:"code"`
 	Desc QueryUserRoomIdsDescType `json:"desc"`
@@ -42,7 +38,7 @@ type QueryMembersDataType struct {
 }
 
 type CreateUserID struct {
-	Code
+	Code int64 `json:"code"`
 	Info struct {
 		Token string `json:"token"`
 		Accid string `json:"accid"`
@@ -76,18 +72,18 @@ type MembersByPageDataType struct {
 	RobotExpirAt uint64 `json:"robotExpirAt"`
 }
 type MuteRoomType struct {
-	Code
+	Code int64 `json:"code"`
 	Desc MuteRoomDescType `json:"desc"`
 } 
 type MuteRoomDescType struct {
 	success bool `json:"success"`
 }
 type SendMsgType struct {
-	Code
+	Code int64 `json:"code"`
 	Desc SendMsgDescType `json:"desc"`
 }
 type TemporaryMuteType struct {
-	Code
+	Code int64 `json:"code"`
 	Desc TemporaryMuteDescType `json:"desc"`
 } 
 type TemporaryMuteDescType struct {
@@ -95,7 +91,7 @@ type TemporaryMuteDescType struct {
 }
 
 type RemoveRobotType struct {
-	Code
+	Code int64 `json:"code"`
 	Desc RemoveRobotDescType `json:"desc"`
 } 
 type RemoveRobotDescType struct {
@@ -104,7 +100,7 @@ type RemoveRobotDescType struct {
 }
 
 type AddRobotType struct {
-	Code
+	Code int64 `json:"code"`
 	Desc AddRobotDescType `json:"desc"`
 }
 type AddRobotDescType struct {
@@ -129,7 +125,7 @@ type SendMsgDescType struct {
 }
 
 type TopNType struct {
-	Code
+	Code int64 `json:"code"`
 	Data []TopNDataType `json:"data"`
 } 
 type TopNDataType struct {
@@ -142,7 +138,7 @@ type TopNDataType struct {
 }
 
 type CreateChatRoomType struct {
-	Code
+	Code int64 `json:"code"`
 	Chatroom  ChatRoomType `json:"chatroom"`
 }
 
@@ -154,7 +150,7 @@ type CreateChatRoomType struct {
 //MANAGER,          //管理员
 //TEMPORARY,        //临时用户,非固定成员
 type SetMemberRoleType struct {
-	Code
+	Code int64 `json:"code"`
 	Desc struct {
 		Roomid uint64 `json:"roomid"`
 		Level uint64 `json:"level"`
@@ -164,7 +160,7 @@ type SetMemberRoleType struct {
 }
 
 type RequestAddr struct {
-	Code
+	Code int64 `json:"code"`
 	Addr []string `json:"addr"`
 }
 
@@ -181,14 +177,14 @@ type ChatRoomType struct {
 }
 
 type GetBatchChatRoomType struct {
-	Code
+	Code int64 `json:"code"`
 	NoExistRooms []uint64 `json:"noExistRooms"`
 	FailRooms []uint64 `json:"failRooms"`
 	SuccRooms []ChatRoomType `json:"succRooms"`
 }
 
 type RefreshToken struct {
-	Code
+	Code int64 `json:"code"`
 	Info struct {
 		Token string `json:"token"`
 		Accid string `json:"accid"`
@@ -209,7 +205,7 @@ type Uinfos struct {
 }
 
 type GetUserInfo struct {
-	Code
+	Code int64 `json:"code"`
 	Uinfos []Uinfos `json:"uinfos"`
 }
 
@@ -221,27 +217,30 @@ type Friends struct {
 }
 
 type GetFriend struct {
-	Code
+	Code int64 `json:"code"`
 	Size    int64     `json:"size"`
 	Friends []Friends `json:"friends"`
 }
 
 type BlockAndMute struct {
-	Code
+	Code int64 `json:"code"`
 	MuteList  []string `json:"mutelist"`
 	BlackList []string `json:"blacklist"`
 }
 
 type SendMsg struct {
-	Code
+	Code int64 `json:"code"`
 	Data struct {
 		MsgId    int64 `json:"msgid"`
 		AntiSpam bool  `json:"antispam"`
 	} `json:"data"`
 }
 
+type OnlyCode struct {
+	Code int64 `json:"code"`
+}
 type BroadcastMsg struct {
-	Code
+	Code int64 `json:"code"`
 	Msg struct {
 		ExpireTime  int64    `json:"expireTime"`
 		Body        string   `json:"body"`
@@ -251,12 +250,15 @@ type BroadcastMsg struct {
 		TargetOs    []string `json:"targetOs"`
 	} `json:"msg"`
 }
-
+type CodeDescType struct {
+	Code int64 `json:"code"`
+	Desc string `json:"desc"`
+}
 func handleOnlyCodeResponse(rsp []byte, err error) error {
 	if err != nil {
 		return err
 	}
-	var r Code
+	var r CodeDescType
 	err = json.Unmarshal(rsp, &r)
 	if err != nil {
 		return err

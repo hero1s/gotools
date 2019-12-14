@@ -76,13 +76,15 @@ var (
 	FrozenUser     = errors.New("2001")
 	FrozenDevice   = errors.New("2002")
 
-	Unauthorized     = errors.New("4000")
-	LoginFail        = errors.New("4001")
-	UserAlreadyExist = errors.New("4002")
-	UserNotFound     = errors.New("4003")
-	TokenInvalid     = errors.New("4004")
-	TokenExpired     = errors.New("4005")
-	SMSCodeError     = errors.New("4006")
+	Unauthorized       = errors.New("4000")
+	LoginFail          = errors.New("4001")
+	UserAlreadyExist   = errors.New("4002")
+	UserNotFound       = errors.New("4003")
+	TokenInvalid       = errors.New("4004")
+	TokenExpired       = errors.New("4005")
+	SMSCodeError       = errors.New("4006")
+	PasswordLimitError = errors.New("4007")
+	FreezeLogin        = errors.New("4008")
 
 	//服务器端错误
 	SystemError     = errors.New("5000")
@@ -108,6 +110,8 @@ var ErrorCode = map[error][]string{
 	TokenInvalid:        {"token invalid", "无效的token"},
 	TokenExpired:        {"token expired", "token已过期"},
 	SMSCodeError:        {"smscode error", "验证码错误"},
+	PasswordLimitError:  {"password limit error", "密码错误次数太多,请用验证码登录"},
+	FreezeLogin:         {"login freeze", "登录错误次数太多,账号已被冻结"},
 	SystemError:         {"system error", "系统异常"},
 	DatabaseError:       {"database error", "数据库错误"},
 	UnknownError:        {"unknown error", "未知错误"},

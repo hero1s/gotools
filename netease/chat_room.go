@@ -67,7 +67,7 @@ func (b *Net)UpdateMyRoomRole(roomid uint64,accid string,pm map[string]interface
 	if err != nil {
 		return err
 	}
-	var r Code
+	var r CodeDescType
 	err = json.Unmarshal(rsp, &r)
 	if err != nil {
 		return err
@@ -201,7 +201,7 @@ func (b *Net)TopN(pm map[string]interface{}) ([]TopNDataType,error) {
 	if err != nil {
 		return rlt,err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("创建聊天室失败,返回:%#v",r)
 		return rlt,err
 	}
@@ -235,7 +235,7 @@ func (b *Net)MuteRoom(roomid uint64,operator string,mute bool,needNotify bool,no
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("将聊天室整体禁言,返回:%#v",r)
 		return err
 	}
@@ -270,7 +270,7 @@ func (b *Net)TemporaryMute(roomid uint64,operator string,target string,muteDurat
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("设置临时禁言状态,返回:%#v",r)
 		return err
 	}
@@ -296,7 +296,7 @@ func (b *Net) RemoveRobot(roomid uint64,accids []string) error {
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("从聊天室内删除机器人,返回:%#v",r)
 		return err
 	}
@@ -338,7 +338,7 @@ func (b *Net) AddRobot(pm map[string]interface{}) error {
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("往聊天室里加机器人,返回:%#v",r)
 		return err
 	}
@@ -421,8 +421,8 @@ func (b *Net) SendMsgChatRoom(pm map[string]interface{}) error  {
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
-		log.Debug("创建聊天室失败,返回:%#v",r)
+	if r.Code != 200 {
+		log.Debug("发送聊天室消息,返回:%#v",r)
 		return err
 	}
 	return nil
@@ -447,7 +447,7 @@ func (b *Net) RequestAddr(roomid uint64,accid string,clienttype int,clientip str
 	if err != nil {
 		return addrs,err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("请求聊天室地址,返回:%#v",r)
 		return addrs,err
 	}
@@ -479,7 +479,7 @@ func (b *Net) SetMemberRole(roomid uint64,operator string,target string,opt int6
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("修改聊天室开/关闭状态,返回:%#v",r)
 		return err
 	}
@@ -498,7 +498,8 @@ func (b *Net) CreateChatRoom(accId string,roomName string) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	if r.Code.Code != 200 {
+
+	if r.Code != 200 {
 		log.Debug("创建聊天室失败,返回:%#v",r)
 		return 0,err
 	}
@@ -522,7 +523,7 @@ func (b *Net) GetChatRoom(roomid uint64,needOnlineUserCount bool)(ChatRoomType,e
 	if err != nil {
 		return rlt, err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("创建聊天室失败,返回:%#v",r)
 		return rlt,err
 	}
@@ -550,7 +551,7 @@ func (b *Net) GetBatchChatRoom(ids []uint64,needOnlineUserCount bool)([]ChatRoom
 	if err != nil {
 		return data, err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("创建聊天室失败,返回:%#v",r)
 		return data,err
 	}
@@ -572,17 +573,31 @@ func (b *Net) ToggleCloseStat(roomid uint64,operator string,valid bool) error  {
 	if err != nil {
 		return err
 	}
-	var r CreateChatRoomType
-	err = json.Unmarshal(rsp, &r)
+
+	type Result struct {
+		Code int `json:"code"`
+		Desc interface{} `json:"desc"`
+	}
+
+	ret := Result{}
+	err = json.Unmarshal(rsp, &ret)
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
-		log.Debug("修改聊天室开/关闭状态,返回:%#v",r)
-		return err
+
+	if ret.Code != 200 {
+		log.Debug("修改聊天室开/关闭状态,返回:%#v", ret)
+		return errors.New("修改聊天室开/关闭状态："+ fmt.Sprintf("%v", ret.Desc))
 	}
+
 	return nil
 }
+
+type  toggleCloseStatType struct {
+	Code int64 `json:"code"`
+	Desc  ChatRoomType `json:"desc"`
+}
+
 type QueueInitType struct {
 	Code int64 `json:"code"`
 }
@@ -626,7 +641,7 @@ func (b *Net) QueueOffer(roomid uint64,key string,value string,operator string,t
 	if err != nil {
 		return err
 	}
-	var r Code
+	var r OnlyCode
 	err = json.Unmarshal(rsp, &r)
 	if err != nil {
 		return err
@@ -653,7 +668,7 @@ func (b *Net) QueueBatchUpdateElements(roomid uint64,elements string,operator st
 	if err != nil {
 		return err
 	}
-	var r Code
+	var r OnlyCode
 	err = json.Unmarshal(rsp, &r)
 	if err != nil {
 		return err
@@ -673,13 +688,33 @@ func (b *Net)QueueDrop(roomid uint64) error {
 	if err != nil {
 		return err
 	}
-	var r Code
+	var r OnlyCode
 	err = json.Unmarshal(rsp, &r)
 	if err != nil {
 		return err
 	}
 	if r.Code != 200 {
 		log.Debug("删除聊天室队列,返回:%#v",r)
+		return err
+	}
+	return nil
+}
+
+//删除聊天室队列
+func (b *Net)QueuePoll(roomid uint64,key string) error {
+	url := "https://api.netease.im/nimserver/chatroom/queuePoll.action"
+	rsp, err := b.postDataHttps(url, map[string]interface{}{"roomid":roomid,"key":key})
+	log.Debug("删除聊天室队列元素,post返回%v",string(rsp[:]))
+	if err != nil {
+		return err
+	}
+	var r OnlyCode
+	err = json.Unmarshal(rsp, &r)
+	if err != nil {
+		return err
+	}
+	if r.Code != 200 {
+		log.Debug("删除聊天室队列元素,返回:%#v",r)
 		return err
 	}
 	return nil
@@ -716,7 +751,7 @@ func (b *Net) UpdateChatRoom(roomid uint64,pm map[string]interface{}) error  {
 	if err != nil {
 		return err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("创建聊天室失败,返回:%#v",r)
 		return err
 	}

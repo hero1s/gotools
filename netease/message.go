@@ -78,8 +78,8 @@ func (b *Net) SendMsg(data map[string]interface{}) (s SendMsg, err error) {
 	if err != nil {
 		return s, err
 	}
-	if s.Code.Code != 200 {
-		return s, errors.New(fmt.Sprintf("%v", s.Code.Code))
+	if s.Code != 200 {
+		return s, errors.New(fmt.Sprintf("%v", s.Code))
 	}
 
 	return s, nil
@@ -98,8 +98,8 @@ func (b *Net) SendBatchMsg(data map[string]interface{}) (s SendMsg, err error) {
 	if err != nil {
 		return s, err
 	}
-	if s.Code.Code != 200 {
-		return s, errors.New(fmt.Sprintf("%v", s.Code.Code))
+	if s.Code != 200 {
+		return s, errors.New(fmt.Sprintf("%v", s.Code))
 	}
 
 	return s, nil
@@ -181,9 +181,8 @@ func (b *Net) BroadcastMsg(data map[string]interface{}) (r BroadcastMsg, err err
 		return r, err
 	}
 	fmt.Println("----rsp:", string(rsp))
-	if r.Code.Code != 200 {
-		fmt.Println("-------broadcastMsg error:", r.Code.Desc)
-		return r, errors.New(fmt.Sprintf("%v", r.Code.Code))
+	if r.Code != 200 {
+		return r, errors.New(fmt.Sprintf("%v", r.Code))
 	}
 	return r, nil
 }

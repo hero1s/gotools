@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	neturl "net/url"
 	"strings"
 	"time"
 )
@@ -50,14 +51,13 @@ func (b *Net) checkSumBuilder() {
 	b.CheckSum = hex.EncodeToString(h.Sum(nil))
 }
 
-
 //检查是否是云信的抄送
-func (b *Net) CheckSumChecker(checkSum_request string,CurTime_request string,body_request string,md5_requist string) bool  {
+func (b *Net) CheckSumChecker(checkSum_request string, CurTime_request string, body_request string, md5_requist string) bool {
 	m := md5.New()
 	m.Write([]byte(body_request))
 	md5_local := hex.EncodeToString(m.Sum(nil))
 	if md5_local != md5_requist {
-		log.Error("检查是否是云信的抄送,md5错误,local:%v,request:%v",md5_local,md5_requist)
+		log.Error("检查是否是云信的抄送,md5错误,local:%v,request:%v", md5_local, md5_requist)
 		return false
 	}
 
@@ -67,7 +67,7 @@ func (b *Net) CheckSumChecker(checkSum_request string,CurTime_request string,bod
 	checkSum_local := hex.EncodeToString(h.Sum(nil))
 
 	if checkSum_local != checkSum_request {
-		log.Error("检查是否是云信的抄送,sha错误,local:%v,request:%v",checkSum_local,checkSum_request)
+		log.Error("检查是否是云信的抄送,sha错误,local:%v,request:%v", checkSum_local, checkSum_request)
 		return false
 	}
 	return true
@@ -90,15 +90,15 @@ func (b *Net) getDataHttps(url string, data map[string]interface{}) ([]byte, err
 			dataStr = dataStr + fmt.Sprintf("&%v=%v", k, v)
 		}
 	}
-	url = fmt.Sprintf("%v%v",url,dataStr)
-	log.Debug("云信get请求:%v",url)
+	url = fmt.Sprintf("%v%v", url, dataStr)
+	log.Debug("云信get请求:%v", url)
 	rsp, err := httpsRequest(Request{
 		Method: "GET",
 		URL:    url,
 		Header: headers,
 		//Body:   dataStr,
 	})
-	log.Debug("云信get请求返回:%v",string(rsp[:]))
+	log.Debug("云信get请求返回:%v", string(rsp[:]))
 	return rsp, err
 }
 
@@ -111,22 +111,18 @@ func (b *Net) postDataHttps(url string, data map[string]interface{}) ([]byte, er
 		"CheckSum":     {b.CheckSum},
 		"Content-Type": {"application/x-www-form-urlencoded;charset=utf-8"},
 	}
-	var dataStr string
+	tmp := neturl.Values{}
 	for k, v := range data {
-		if dataStr == "" {
-			dataStr = fmt.Sprintf("%v=%v", k, v)
-		} else {
-			dataStr = dataStr + fmt.Sprintf("&%v=%v", k, v)
-		}
+		tmp.Add(k, fmt.Sprintf("%v", v))
 	}
-	log.Debug("云信post请求:%v",dataStr)
+	dataStr := tmp.Encode()
 	rsp, err := httpsRequest(Request{
 		Method: "POST",
 		URL:    url,
 		Header: headers,
 		Body:   dataStr,
 	})
-	log.Debug("云信post请求返回:%v",string(rsp[:]))
+	log.Debug("云信post请求返回:%v", string(rsp[:]))
 	return rsp, err
 }
 
@@ -151,6 +147,7 @@ func httpsRequest(args Request) ([]byte, error) {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	},
 	}
+	log.Debug("body:%v", args.Body)
 	req, err := http.NewRequest(args.Method, args.URL, strings.NewReader(args.Body))
 	if err != nil {
 		return nil, nil

@@ -21,8 +21,8 @@ func (b *Net) CreateUserId(data map[string]interface{}) (r CreateUserID, err err
 		return r, err
 	}
 
-	if r.Code.Code != 200 {
-		return r, errors.New(fmt.Sprintf("%v", r.Code.Code))
+	if r.Code != 200 {
+		return r, errors.New(fmt.Sprintf("%v", r.Code))
 	}
 	return r, nil
 }
@@ -43,7 +43,7 @@ func (b *Net) UpdateUserToken(accId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if r.Code.Code != 200 {
+	if r.Code != 200 {
 		log.Debug("更新token,返回:%#v",r)
 		return "",err
 	}
@@ -78,8 +78,8 @@ func (b *Net) GetUserInfo(accids []string) (r GetUserInfo, err error) {
 	if err != nil {
 		return r, err
 	}
-	if r.Code.Code != 200 {
-		return r, errors.New(fmt.Sprintf("%v", r.Code.Code))
+	if r.Code != 200 {
+		return r, errors.New(fmt.Sprintf("%v", r.Code))
 	}
 	return r, nil
 

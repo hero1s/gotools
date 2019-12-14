@@ -87,8 +87,8 @@ func (b *Net) GetFriend(accId string, updateTime int64) (r GetFriend, err error)
 	if err != nil {
 		return r, err
 	}
-	if r.Code.Code != 200 {
-		return r, errors.New(fmt.Sprintf("%v", r.Code.Code))
+	if r.Code != 200 {
+		return r, errors.New(fmt.Sprintf("%v", r.Code))
 	}
 	return r, nil
 }
@@ -136,8 +136,8 @@ func (b *Net) ListBlockAndMuteFriend(accId string) (r BlockAndMute, err error) {
 	if err != nil {
 		return r, err
 	}
-	if r.Code.Code != 200 {
-		return r, errors.New(fmt.Sprintf("%v", r.Code.Code))
+	if r.Code != 200 {
+		return r, errors.New(fmt.Sprintf("%v", r.Code))
 	}
 	return r, nil
 }
