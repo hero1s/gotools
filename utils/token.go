@@ -45,7 +45,9 @@ func GenerateToken(claims CustomClaims) (string, error) {
 
 // decode token
 func DecodeTokenByStr(tokenStr string) (*CustomClaims, error) {
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (i interface{}, e error) {
+	claims := &CustomClaims{}
+	parser := &jwt.Parser{}
+	token, err := parser.ParseWithClaims(tokenStr,claims, func(token *jwt.Token) (i interface{}, e error) {
 		return []byte(tokenSecret), nil
 	})
 	if err != nil {
