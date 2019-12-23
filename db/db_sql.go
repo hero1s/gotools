@@ -127,14 +127,10 @@ func QueryMultiSqlOderByLimit(tableName string, condition string, orderbyConditi
 	return "SELECT * FROM " + tableName + " WHERE " + condition + fmt.Sprintf(" order by %v limit %v,%v", orderbyCondition, pageIndex, pageSize)
 }
 
-func FormatLimit(fileName string, isDesc bool, pageIndex, pageSize int64) string {
+func FormatLimit(fileName string, pageIndex, pageSize int64) string {
 	pageIndex, pageSize = GetLimitAndPageSize(pageIndex, pageSize)
 	if len(fileName) > 0 {
-		if isDesc {
-			return fmt.Sprintf(" order by %v desc limit %v,%v", fileName, pageIndex, pageSize)
-		} else {
-			return fmt.Sprintf(" order by %v limit %v,%v", fileName, pageIndex, pageSize)
-		}
+		return fmt.Sprintf(" order by %v limit %v,%v", fileName, pageIndex, pageSize)
 	} else {
 		return fmt.Sprintf(" limit %v,%v", pageIndex, pageSize)
 	}
