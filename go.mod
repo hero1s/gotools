@@ -13,6 +13,8 @@ require (
 	github.com/garyburd/redigo v1.6.0
 	github.com/go-redis/redis v6.14.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
+	github.com/golang/protobuf v1.3.1
+	github.com/gorilla/websocket v1.4.1
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/iGoogle-ink/gopay v1.3.9
 	github.com/onsi/ginkgo v1.10.3 // indirect
