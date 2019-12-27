@@ -63,3 +63,26 @@ func VerifySMSCaptcha(phone, captcha, phoneKey string, c cache.Cache) (error, bo
 func IsExistSMSCaptcha(phoneNum, phoneKey string, c cache.Cache) bool {
 	return c.IsExist(phoneKey + phoneNum)
 }
+
+//发送短信通知
+func SendSMSNotify(phone, signName, templateCode, phoneKey,notifyMsg string, c cache.Cache, timeout, sendAgainTimeout int64) (string, error) {
+	sendAgainKey := fmt.Sprintf("%v%v-%v", phoneKey, phone, "SendAgain")
+	if c.IsExist(sendAgainKey) {
+		return "短信验证码已发送,无需重复发送", nil
+	}
+	templateParam := fmt.Sprintf("{\"name\":\"%v\"}", notifyMsg)
+	client := sms.NewDYSmsClient(accessKeyIdSMS, accessKeySecretSMS)
+	args := sms.SendSmsArgs{
+		SignName:      signName,
+		TemplateCode:  templateCode,
+		TemplateParam: templateParam,
+		PhoneNumbers:  phone,
+	}
+	resp, err := client.SendSms(&args)
+	if err != nil {
+		return resp.Message, err
+	}
+	err = c.Put(phoneKey+phone, notifyMsg, time.Duration(timeout)*time.Second)
+	err = c.Put(sendAgainKey, notifyMsg, time.Duration(sendAgainTimeout)*time.Second)
+	return resp.Message, err
+}
