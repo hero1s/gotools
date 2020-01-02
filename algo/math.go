@@ -1,8 +1,6 @@
 package algo
 
 import (
-	crand "crypto/rand"
-	"math/big"
 	"math/rand"
 	"time"
 )
@@ -15,14 +13,6 @@ func init() {
 func Random(min, max int64) int64 {
 	max += 1
 	return rand.Int63n(max-min) + min
-}
-func RandInt64(min, max int64) int64 {
-	maxBigInt := big.NewInt(max)
-	i, _ := crand.Int(crand.Reader, maxBigInt)
-	if i.Int64() < min {
-		RandInt64(min, max)
-	}
-	return i.Int64()
 }
 func RemoveDuplicateInt(list []int64) []int64 {
 	var x []int64
