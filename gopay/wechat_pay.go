@@ -55,7 +55,7 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 		log.Error("微信预下单:%#v  \n支付失败Error:%v", body, err.Error())
 		return c, err
 	} else {
-		log.Info("微信预下单wxRsp:%#v", *wxRsp)
+		log.Debug("微信预下单wxRsp:%#v", *wxRsp)
 	}
 
 	c["appid"] = wxRsp.Appid
@@ -131,7 +131,7 @@ func Refund(orderId string, moneyFee int64, tradeType string) bool {
 // 企业向微信用户个人付款：client.Transfer()
 func Transfer(orderId, openid, userName, desc string, moneyFee int64, tradeType string) {
 	nonceStr := gopay.GetRandomString(32)
-	log.Info("partnerTradeNo:%v", orderId)
+	log.Debug("partnerTradeNo:%v", orderId)
 	//初始化参数结构体
 	body := make(gopay.BodyMap)
 	body.Set("nonce_str", nonceStr)
@@ -153,7 +153,7 @@ func Transfer(orderId, openid, userName, desc string, moneyFee int64, tradeType 
 		log.Error("微信付款Error:", err)
 		return
 	}
-	log.Info("wxRsp：%#v", *wxRsp)
+	log.Debug("wxRsp：%#v", *wxRsp)
 	if wxRsp.ReturnCode == gopay.SUCCESS {
 		log.Debug("微信转账成功:%#v", wxRsp)
 	} else {

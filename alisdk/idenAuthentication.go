@@ -31,7 +31,7 @@ func IdenAuthentication(idNo, name, appCode string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	log.Info("身份验证返回:%v", string(body)) //打印返回文本
+	log.Debug("身份验证返回:%v", string(body)) //打印返回文本
 	type IdenAuthenResp struct {
 		Name        string
 		IdNo        string `json:"idNo"`

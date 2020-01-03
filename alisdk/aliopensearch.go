@@ -161,6 +161,6 @@ func Suggest(appName, suggestName, query string, filterSearch string) []string {
 			res = append(res, v.Suggestion)
 		}
 	}
-	log.Info(fmt.Sprintf("suggest:%+v----》%+v---%v", resp, sug, res))
+	log.Debug(fmt.Sprintf("suggest:%+v----》%+v---%v", resp, sug, res))
 	return res
 }

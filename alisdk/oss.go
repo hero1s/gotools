@@ -18,7 +18,7 @@ func UploadFileToOss(reader io.Reader, filename, savePath, savename string, id u
 	}
 	ossPath = GetImagePath(savePath, filename)
 	err = PutFileStreamToOss(ossPath, reader)
-	log.Info("upload file to oss:%v/%v", savePath, filename)
+	log.Debug("upload file to oss:%v/%v", savePath, filename)
 	return ossPath, err
 
 }
