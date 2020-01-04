@@ -51,7 +51,7 @@ func DecodeTokenByStr(tokenStr string) (*CustomClaims, error) {
 		return []byte(tokenSecret), nil
 	})
 	if err != nil {
-		log.Error("解析token失败:%v", err.Error())
+		log.Debug("解析token失败:%v", err.Error())
 		return nil, wrapError(err)
 	}
 	claims, ok := token.Claims.(*CustomClaims)
@@ -66,7 +66,7 @@ func DecodeToken(r *http.Request) (*CustomClaims, error) {
 		return []byte(tokenSecret), nil
 	}, request.WithClaims(&CustomClaims{}))
 	if err != nil {
-		log.Error("解析token失败:%v", err.Error())
+		log.Debug("解析token失败:%v", err.Error())
 		return nil, wrapError(err)
 	}
 
@@ -83,7 +83,7 @@ func RefreshToken(r *http.Request) (string, error) {
 		return []byte(tokenSecret), nil
 	}, request.WithClaims(&CustomClaims{}))
 	if err != nil {
-		log.Error("解析token失败:%v", err.Error())
+		log.Debug("解析token失败:%v", err.Error())
 		return "", wrapError(err)
 	}
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {

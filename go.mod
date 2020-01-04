@@ -3,6 +3,7 @@ module github.com/hero1s/gotools
 go 1.13
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.60.317
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.4+incompatible
 	github.com/astaxie/beego v1.12.0
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
