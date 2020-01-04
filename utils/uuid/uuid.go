@@ -156,7 +156,7 @@ func (u *UUID) LoadH24FromRedis(newClient NewClient, key string) error {
 	}
 
 	u.Reset(h20 << 12)
-	log.Debug("<uuid> new h20: %d. tag: %s\n", h20, u.Tag)
+	log.Info("<uuid> new h20: %d. tag: %s\n", h20, u.Tag)
 
 	u.Lock()
 	defer u.Unlock()
@@ -196,7 +196,7 @@ func (u *UUID) LoadH32FromRedis(newClient NewClient, key string) error {
 	}
 
 	u.Reset(h32 << 32)
-	log.Debug("<uuid> new h32: %d. tag: %s\n", h32, u.Tag)
+	log.Info("<uuid> new h32: %d. tag: %s\n", h32, u.Tag)
 
 	u.Lock()
 	defer u.Unlock()

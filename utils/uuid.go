@@ -19,16 +19,15 @@ func InitUUID(redisHost, password string) error {
 		}), true, nil
 	}
 	Uid = uuid.NewUUID("uid")
-	err1 := Uid.LoadH24FromRedis(newClient, "UUID:UID:24")
-	err2 := Uid.LoadH32FromRedis(newClient, "UUID:UID:32")
-	if err1 != nil {
-		log.Error("初始化UUID错误:%v",err1.Error())
-		return err1
+	err := Uid.LoadH24FromRedis(newClient, "UUID:UID:24")
+	if err != nil {
+		log.Error("初始化UUID错误:%v",err.Error())
+		return err
 	}
-	if err2 != nil {
-		log.Error("初始化UUID错误:%v",err2.Error())
-		return err2
+	Uid.Renew32 = func() error {//只设置函数不加计数
+		return Uid.LoadH32FromRedis(newClient, "UUID:UID:32")
 	}
+
 	return nil
 }
 
