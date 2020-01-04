@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-redis/redis"
+	"github.com/hero1s/gotools/log"
 	"io"
 	"sync"
 	"sync/atomic"
@@ -48,22 +49,23 @@ func (u *UUID) Next() uint64 {
 	x := atomic.AddUint64(&u.N, 1)
 	// 值已经大于64位的最大值了
 	if x >= PanicValue {
+		log.Error("<uuid> 已经达到极限值, tag: %s", u.Tag)
 		panic(fmt.Errorf("<uuid> 已经达到极限值, tag: %s", u.Tag))
 	}
 	// 低12位已经满了
 	if x&Renew12Interval == Renew12Interval {
 		err := u.Renew20Now()
 		if err != nil {
-			fmt.Printf("<uuid> renew 20 failed. tag: %s, reason: %+v", u.Tag, err)
+			log.Error("<uuid> renew 20 failed. tag: %s, reason: %+v", u.Tag, err)
 		} else {
-			fmt.Printf("<uuid> renew 20 succeeded. tag: %s", u.Tag)
+			log.Debug("<uuid> renew 20 succeeded. tag: %s", u.Tag)
 		}
 	} else if x&Renew32Interval == Renew32Interval { // 中20位已经满了
 		err := u.Renew32Now()
 		if err != nil {
-			fmt.Printf("<uuid> renew 32 failed. tag: %s, reason: %+v", u.Tag, err)
+			log.Error("<uuid> renew 32 failed. tag: %s, reason: %+v", u.Tag, err)
 		} else {
-			fmt.Printf("<uuid> renew 32 succeeded. tag: %s", u.Tag)
+			log.Debug("<uuid> renew 32 succeeded. tag: %s", u.Tag)
 		}
 	}
 	return x
@@ -154,7 +156,7 @@ func (u *UUID) LoadH24FromRedis(newClient NewClient, key string) error {
 	}
 
 	u.Reset(h20 << 12)
-	fmt.Printf("<uuid> new h20: %d. tag: %s\n", h20, u.Tag)
+	log.Debug("<uuid> new h20: %d. tag: %s\n", h20, u.Tag)
 
 	u.Lock()
 	defer u.Unlock()
@@ -194,7 +196,7 @@ func (u *UUID) LoadH32FromRedis(newClient NewClient, key string) error {
 	}
 
 	u.Reset(h32 << 32)
-	fmt.Printf("<uuid> new h32: %d. tag: %s\n", h32, u.Tag)
+	log.Debug("<uuid> new h32: %d. tag: %s\n", h32, u.Tag)
 
 	u.Lock()
 	defer u.Unlock()

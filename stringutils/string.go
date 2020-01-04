@@ -2,7 +2,7 @@ package stringutils
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/hero1s/gotools/log"
 	"github.com/zheng-ji/goSnowFlake"
 	"net/smtp"
 	"regexp"
@@ -115,7 +115,7 @@ func CheckPhoneNum(mobileNum string) bool {
 func ChangeJsonStruct(from, to interface{}) error {
 	str, err := json.Marshal(from)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err.Error())
 		return err
 	}
 	err = json.Unmarshal(str, &to)

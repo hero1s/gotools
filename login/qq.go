@@ -61,7 +61,6 @@ func GetQQUserInfo(accessToken, openID string, typ int64) (*QQ, error) {
 	} else {
 		result.Sex = 2
 	}
-	fmt.Printf("QQ返回值:%#v\n", result)
 	if result.Ret < 0 {
 		return &result, errors.New(result.Msg)
 	}
