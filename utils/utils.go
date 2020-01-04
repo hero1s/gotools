@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net"
 	"time"
 )
@@ -66,6 +67,18 @@ func LocalIP() string {
 //RandomStr 获取一个随机字符串
 func RandomStr() string {
 	return fmt.Sprintf("%d", time.Now().UnixNano())
+}
+
+//生成随机字符串
+func GetRandomString(l int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyz"
+	bytes := []byte(str)
+	result := make([]byte, 0)
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < l; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	return string(result)
 }
 
 func MapStringToStruct(m map[string]interface{}, i interface{}) error {
