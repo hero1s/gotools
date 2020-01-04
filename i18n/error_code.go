@@ -118,3 +118,12 @@ var ErrorCode = map[error][]string{
 	AccessLimit:         {"more max access", "超过并发数触发访问限速"},
 	PermissionError:     {"permission error", "权限访问错误"},
 }
+
+// 获取错误信息
+func GetErrorMsg(code error,langIndex int64) string {
+	if v, ok := ErrorCode[code]; ok {
+		return v[langIndex]
+	} else {
+		return code.Error()
+	}
+}
