@@ -121,6 +121,9 @@ var ErrorCode = map[error][]string{
 
 // 获取错误信息
 func GetErrorMsg(code error,langIndex int64) string {
+	if code == nil {
+		return ""
+	}
 	if v, ok := ErrorCode[code]; ok {
 		return v[langIndex]
 	} else {

@@ -1,9 +1,6 @@
 package common
 
 import (
-	"fmt"
-	"github.com/hero1s/gotools/cache"
-	"github.com/hero1s/gotools/log"
 	"math/rand"
 	"reflect"
 	"strconv"
@@ -129,24 +126,3 @@ func ChangeStructToJsonMap(p interface{}) map[string]interface{} {
 	return data
 }
 
-/*
- *desc:用于访问次数限制
- *@key:需要以什么来做标识做访问次数限制的标志
- *@frequency: 次数
- *@expireTime:多少秒超时
- */
-func AccessLimit(cache cache.Cache, key string, frequency int64, expireTime int64) bool {
-	ok := cache.IsExist(key)
-	if !ok { //doesn't exist, set a key and expire time
-		cache.Put(key, 1, time.Duration(expireTime)*time.Second)
-		return true
-	}
-
-	f := cache.GetInt64(key)
-	if f < frequency {
-		cache.Incr(key)
-		return true
-	}
-	log.Debug(fmt.Sprintf("触及访问限速,key:%v,frequency:%v,expireTime:%v", key, frequency, expireTime))
-	return false
-}
