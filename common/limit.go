@@ -13,16 +13,15 @@ import (
  *@frequency: 次数
  *@expireTime:多少秒超时
  */
-func AccessLimit(cache cache.Cache, key string, frequency int64, expireTime int64) bool {
-	ok := cache.IsExist(key)
+func AccessLimit(key string, frequency int64, expireTime int64) bool {
+	ok := cache.MemCache.IsExist(key)
 	if !ok { //doesn't exist, set a key and expire time
-		cache.Put(key, 1, time.Duration(expireTime)*time.Second)
+		cache.MemCache.Put(key, 1, time.Duration(expireTime)*time.Second)
 		return true
 	}
-
-	f := cache.GetInt64(key)
-	if f < frequency {
-		cache.Incr(key)
+	f := cache.MemCache.GetInt64(key)
+	if f < frequency {// 内存模式不会修改过期时间
+		cache.MemCache.Incr(key)
 		return true
 	}
 	log.Info(fmt.Sprintf("触及访问限速,key:%v,frequency:%v,expireTime:%v", key, frequency, expireTime))
@@ -85,7 +84,3 @@ func CheckErrorLock(key string, isRight bool, limitCount, lockHour int64) bool {
 	log.Info("验证错误:%v 计数:%v", key, count+1)
 	return true
 }
-
-
-
-
