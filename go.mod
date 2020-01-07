@@ -30,4 +30,6 @@ require (
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
 
+replace github.com/astaxie/beego v1.12.0 => github.com/nicle-lin/beego v1.12.5
+
 replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3

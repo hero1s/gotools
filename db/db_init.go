@@ -10,8 +10,8 @@ type Log interface {
 	Write(p []byte) (n int, err error)
 }
 
-// init mysql
-func InitDB(aliasName, user, password, host, dbName string, debugLog bool, log Log) error {
+// init mysql params(30, 500,int64(10*time.Minute))
+func InitDB(aliasName, user, password, host, dbName string, debugLog bool, log Log, params ...int64) error {
 	orm.Debug = debugLog
 	orm.DebugLog = orm.NewLog(log)
 	if debugLog == false {
@@ -19,5 +19,5 @@ func InitDB(aliasName, user, password, host, dbName string, debugLog bool, log L
 	}
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	source := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&loc=Local", user, password, host, dbName)
-	return orm.RegisterDataBase(aliasName, "mysql", source, 0, 0)
+	return orm.RegisterDataBase(aliasName, "mysql", source, params...)
 }
