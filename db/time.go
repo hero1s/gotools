@@ -228,6 +228,18 @@ func StartEndTimeByTimestamp(t int64) (int64, int64) {
 	return ts.Unix(), te.Unix()
 }
 
+//获取给出当周的时间戳，当周的开始与结束的时间戳
+func StartEndTimeByWeek(timestamp int64) (int64, int64) {
+	t := time.Unix(timestamp, 0)
+	offset := int(time.Monday - t.Weekday())
+	if offset > 0 {
+		offset = -6
+	}
+	start := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.Local).AddDate(0, 0, offset)
+	end := start.AddDate(0, 0, 7)
+	return start.Unix(), end.Unix()
+}
+
 //获取给出当月的时间戳，当月的开始与结束的时间戳
 func StartEndTimeByMonth(timestamp int64) (int64, int64) {
 	t := time.Unix(timestamp, 0)
