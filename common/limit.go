@@ -29,7 +29,7 @@ func AccessLimit(key string, frequency int64, expireTime int64) bool {
 }
 
 //一天n次限制
-func LimitDay(key string, id uint64, n int64) bool {
+func LimitDay(key string, id uint64, n int64,logLimit bool) bool {
 	key = GetDateKey("d", key, id)
 	re := cache.Redis.Incr(key)
 	cache.Redis.Expire(key, time.Hour*24)
@@ -39,7 +39,9 @@ func LimitDay(key string, id uint64, n int64) bool {
 	}
 	log.Debug("%v 一天N次限制:re:%v,n:%v", key, re.Val(), n)
 	if re.Val() > n {
-		log.Error("超过最大次数限制:%v --- %v", key, re.Val())
+		if logLimit {
+			log.Error("超过最大次数限制:%v --- %v", key, re.Val())
+		}
 		return false
 	}
 	return true

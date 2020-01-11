@@ -3,7 +3,6 @@ package netease
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hero1s/gotools/log"
 	"testing"
 )
 
@@ -32,7 +31,7 @@ func TestNet_CheckSum(t *testing.T) {
 	if err != nil {
 		fmt.Println("-----网易云信返回的错误码::", err)
 	}
-	log.Debug("-----网易云信的返回:%#v\n", rsp)
+	fmt.Printf("-----网易云信的返回:%#v\n", rsp)
 	data1 := map[string]interface{}{
 		"accid":  "12345678",
 		"name":   "test name",
@@ -97,7 +96,7 @@ func TestNet_GetUserInfo(t *testing.T) {
 		fmt.Println("-----err:", err)
 		return
 	}
-	log.Debug("GetUserInfo-rsp:%#v\n", rsp)
+	fmt.Printf("GetUserInfo-rsp:%#v\n", rsp)
 }
 
 func TestNet_GetFriend(t *testing.T) {
@@ -109,5 +108,5 @@ func TestNet_GetFriend(t *testing.T) {
 		fmt.Println("-----err:", err)
 		return
 	}
-	log.Debug("GetFriend-rsp:%#v\n", rsp)
+	fmt.Printf("GetFriend-rsp:%#v\n", rsp)
 }

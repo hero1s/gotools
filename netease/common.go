@@ -151,12 +151,13 @@ type CreateChatRoomType struct {
 //TEMPORARY,        //临时用户,非固定成员
 type SetMemberRoleType struct {
 	Code int64 `json:"code"`
+	/*
 	Desc struct {
 		Roomid uint64 `json:"roomid"`
 		Level uint64 `json:"level"`
 		Accid string	`json:"accid"`
 		Type string `json:"type"`
-	} `json:"desc"`
+	} `json:"desc"`*/
 }
 
 type RequestAddr struct {
