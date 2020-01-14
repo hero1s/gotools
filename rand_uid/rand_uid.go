@@ -4,6 +4,7 @@ import (
 	"github.com/hero1s/gotools/algo"
 	"github.com/hero1s/gotools/cache"
 	"github.com/hero1s/gotools/log"
+	"gopkg.in/fatih/set.v0"
 )
 
 var randUidKey = "rand_uid_key"
@@ -27,10 +28,15 @@ func PopUid() (int64, error) {
 
 //重新生成uid
 func ResetNewUid(startId, endId, num int64) {
+	a := set.New(set.ThreadSafe)
 	for i := int64(0); i < num; i = i + 1 {
 		id := algo.Random(startId, endId)
-		cache.Redis.SAdd(randUidKey, id)
+		a.Add(id)
 	}
+	a.Each(func(id interface{}) bool {
+		cache.Redis.SAdd(randUidKey, id)
+		return true
+	})
 	res := cache.Redis.SCard(randUidKey)
 	log.Info("重新生成用户ID:%v-%v:生成数量:%v,剩余数量:%v",startId,endId,num,res.Val())
 }
