@@ -4,8 +4,10 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"github.com/hero1s/gotools/log"
 	"math/rand"
 	"net"
+	"runtime/debug"
 	"time"
 )
 
@@ -168,4 +170,16 @@ func RemoveElementUint64(nums []uint64, val uint64) int {
 		index++
 	}
 	return len(nums)
+}
+//安全执行异步函数
+func SafeGoroutine(f func()) {
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Error("child goroutine panic occure,err:%v",r)
+				log.Error("stack:%v",debug.Stack())
+			}
+		}()
+		f()
+	}()
 }
