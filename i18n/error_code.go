@@ -75,6 +75,7 @@ var (
 	RecordNotFound = errors.New("2000")
 	FrozenUser     = errors.New("2001")
 	FrozenDevice   = errors.New("2002")
+	CancelUser     = errors.New("2003")
 
 	Unauthorized       = errors.New("4000")
 	LoginFail          = errors.New("4001")
@@ -102,25 +103,27 @@ var ErrorCode = map[error][]string{
 	ParamsCannotBeEmpty: {"params cannot be empty", "参数不能为空"},
 	FrozenUser:          {"frozen user", "用户已封号"},
 	FrozenDevice:        {"frozen device", "该设备已被禁用"},
-	RecordNotFound:      {"record not found", "记录不存在"},
-	Unauthorized:        {"unauthorized access", "未授权访问"},
-	LoginFail:           {"invalid username or password", "账号或密码不正确"},
-	UserAlreadyExist:    {"user already exist", "用户已存在"},
-	UserNotFound:        {"user not found", "用户不存在"},
-	TokenInvalid:        {"token invalid", "无效的token"},
-	TokenExpired:        {"token expired", "token已过期"},
-	SMSCodeError:        {"smscode error", "验证码错误"},
-	PasswordLimitError:  {"password limit error", "密码错误次数太多,请用验证码登录"},
-	FreezeLogin:         {"login freeze", "登录错误次数太多,账号已被冻结"},
-	SystemError:         {"system error", "系统异常"},
-	DatabaseError:       {"database error", "数据库错误"},
-	UnknownError:        {"unknown error", "未知错误"},
-	AccessLimit:         {"more max access", "超过并发数触发访问限速"},
-	PermissionError:     {"permission error", "权限访问错误"},
+	CancelUser:          {"cancel user", "此账号已注销"},
+
+	RecordNotFound:     {"record not found", "记录不存在"},
+	Unauthorized:       {"unauthorized access", "未授权访问"},
+	LoginFail:          {"invalid username or password", "账号或密码不正确"},
+	UserAlreadyExist:   {"user already exist", "用户已存在"},
+	UserNotFound:       {"user not found", "用户不存在"},
+	TokenInvalid:       {"token invalid", "无效的token"},
+	TokenExpired:       {"token expired", "token已过期"},
+	SMSCodeError:       {"smscode error", "验证码错误"},
+	PasswordLimitError: {"password limit error", "密码错误次数太多,请用验证码登录"},
+	FreezeLogin:        {"login freeze", "登录错误次数太多,账号已被冻结"},
+	SystemError:        {"system error", "系统异常"},
+	DatabaseError:      {"database error", "数据库错误"},
+	UnknownError:       {"unknown error", "未知错误"},
+	AccessLimit:        {"more max access", "超过并发数触发访问限速"},
+	PermissionError:    {"permission error", "权限访问错误"},
 }
 
 // 获取错误信息
-func GetErrorMsg(code error,langIndex int64) string {
+func GetErrorMsg(code error, langIndex int64) string {
 	if code == nil {
 		return ""
 	}
