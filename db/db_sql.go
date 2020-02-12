@@ -138,19 +138,25 @@ func FormatLimit(fileName string, pageIndex, pageSize int64) string {
 
 const (
 	DefaultPageSize  = 10
-	MaxPageSize      = 50
+	MaxPageSize      = 1000
 	DefaultPageIndex = 0
-	MaxPageIndex     = 100
+	MaxPageIndex     = 1000
 )
 
 func GetLimitAndPageSize(params ...int64) (int64, int64) {
 	if len(params) >= 2 {
 		pageIndex, pageSize := params[0], params[1]
-		if pageIndex > MaxPageIndex || pageIndex <= 0 {
+		if pageIndex <= 0 {
 			pageIndex = DefaultPageIndex
 		}
-		if pageSize > MaxPageSize || pageSize <= 0 {
+		if pageIndex > MaxPageIndex {
+			pageIndex = MaxPageIndex
+		}
+		if pageSize <= 0 {
 			pageSize = DefaultPageSize
+		}
+		if pageSize > MaxPageSize {
+			pageSize = MaxPageSize
 		}
 		return (pageIndex) * pageSize, pageSize
 	}
@@ -160,11 +166,17 @@ func GetLimitAndPageSize(params ...int64) (int64, int64) {
 func GetLimitAndPageSizeByMaxSize(maxIndex, maxSize int64, params ...int64) (int64, int64) {
 	if len(params) >= 2 {
 		pageIndex, pageSize := params[0], params[1]
-		if pageIndex > maxIndex || pageIndex <= 0 {
+		if pageIndex <= 0 {
 			pageIndex = DefaultPageIndex
 		}
-		if pageSize > maxSize || pageSize <= 0 {
+		if pageIndex > maxIndex {
+			pageIndex = maxIndex
+		}
+		if pageSize <= 0 {
 			pageSize = DefaultPageSize
+		}
+		if pageSize > maxSize {
+			pageSize = maxSize
 		}
 		return (pageIndex) * pageSize, pageSize
 	}
