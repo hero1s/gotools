@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/hero1s/gotools/db"
 	"math"
 	"time"
 )
@@ -30,12 +31,9 @@ func GetCurDayTime(hour, min, second int64) int64 {
 
 //获得两个时间戳的天数差
 func DiffDays(t1, t2 int64) int {
-	if time.Unix(t1, 0).Year() == time.Unix(t2, 0).Year() {
-		one := time.Unix(t1, 0).YearDay()
-		two := time.Unix(t2, 0).YearDay()
-		return int(math.Abs(float64(two - one)))
-	}
-	return int(math.Abs(float64(t2-t1)) / (24 * 3600))
+	s1, _ := db.StartEndTimeByTimestamp(t1)
+	s2, _ := db.StartEndTimeByTimestamp(t2)
+	return int(math.Abs(float64(s2-s1)) / (24 * 3600))
 }
 
 //是否在时间区间内
