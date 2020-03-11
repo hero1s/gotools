@@ -118,6 +118,18 @@ func UpdateTableRecord(dbName, tableName string, data map[string]interface{}, co
 	return n, i18n.WrapDatabaseError(err)
 }
 
+func UpdateAndAddTableRecord(dbName, tableName string, data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
+	// filterData(data, t.TableField)
+	o := NewOrm(multiOrm, dbName)
+	values, sql := UpdateAndAddSql(tableName, data, conditionSql)
+	result, err := o.Raw(sql, values).Exec()
+	if err != nil {
+		return 0, i18n.WrapDatabaseError(err)
+	}
+	n, err := result.RowsAffected()
+	return n, i18n.WrapDatabaseError(err)
+}
+
 func DeleteTableRecord(dbName, tableName string, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
 	o := NewOrm(multiOrm, dbName)
 	sql := DeleteSql(tableName, conditionSql)
@@ -183,6 +195,10 @@ func (t *Table) NewOrUpdateRecord(data map[string]interface{}, multiOrm ...orm.O
 
 func (t *Table) UpdateTableRecord(data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
 	return UpdateTableRecord(t.DbName, t.TableName, data, conditionSql, multiOrm...)
+}
+
+func (t *Table) UpdateAndAddTableRecord(data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
+	return UpdateAndAddTableRecord(t.DbName, t.TableName, data, conditionSql, multiOrm...)
 }
 
 func (t *Table) DeleteTableRecord(conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
