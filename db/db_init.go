@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"time"
 )
 
 type Log interface {
@@ -11,8 +12,9 @@ type Log interface {
 }
 
 // init mysql params(30, 500,int64(10*time.Minute))
-func InitDB(aliasName, user, password, host, dbName string, debugLog bool, log Log, params ...int64) error {
+func InitDB(aliasName, user, password, host, dbName string, debugLog bool, dueTimeMs int64, log Log, params ...int64) error {
 	orm.Debug = debugLog
+	orm.ExecuteTime = time.Duration(dueTimeMs) * time.Millisecond
 	orm.DebugLog = orm.NewLog(log)
 	if debugLog == false {
 		orm.OnlyPrintFail = true

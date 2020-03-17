@@ -27,10 +27,10 @@ require (
 	github.com/zheng-ji/goSnowFlake v0.0.0-20180906112711-fc763800eec9
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
-	gopkg.in/fatih/set.v0 v0.2.1 // indirect
+	gopkg.in/fatih/set.v0 v0.2.1
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
 
-replace github.com/astaxie/beego v1.12.0 => github.com/nicle-lin/beego v1.12.6
+replace github.com/astaxie/beego v1.12.0 => github.com/nicle-lin/beego v1.12.7
 
 replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3
