@@ -94,7 +94,7 @@ func (oAuth *QQAuth) GetQQOpenId(accessToken string) (string, error) {
 }
 
 // User user
-func (oAuth *QQAuth) GetQQUserInfo(accessToken, openID string, typ int64) (*QQ, error) {
+func (oAuth *QQAuth) GetQQUserInfo(accessToken, openID string) (*QQ, error) {
 	var result QQ
 	url := fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s",
 		accessToken,
