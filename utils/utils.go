@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net"
 	"runtime/debug"
+	"strings"
 	"time"
 )
 
@@ -105,6 +106,19 @@ func StructToMapString(i interface{}, m map[string]interface{}) error {
 		return err
 	}
 	return nil
+}
+
+// parse params(name=nick&pass=123)
+func ParseUrlString(params string) map[string]string {
+	paramsMap := map[string]string{}
+	for _, param := range strings.Split(params, "&") {
+		if ! strings.Contains(param, "=") {
+			continue
+		}
+		paramList :=strings.Split(param,"=")
+		paramsMap[paramList[0]] = paramList[1]
+	}
+	return paramsMap
 }
 
 // 如果有相同的key,会被覆盖

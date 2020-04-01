@@ -5,10 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hero1s/gotools/login/fetch"
+	"github.com/hero1s/gotools/utils"
 )
-
-var AndroidQQAppId = "101814185"
-var IosQQAppId = "101814185"
 
 type (
 	// QQ qq
@@ -30,19 +28,77 @@ type (
 		IsYellowYearVip string `json:"is_yellow_year_vip"` // 标识是否为年费黄钻用户（0：不是； 1：是）
 	}
 )
+type QQToken struct {
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int64  `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	OpenId       string `json:"openid"`
+	Scope        string `json:"scope"`
+}
+
+type QQAuth struct {
+	QQAppID     string
+	QQAppSecret string
+}
+
+func NewQQAuth(AppID, AppSecret string) *QQAuth {
+	return &QQAuth{
+		QQAppID:     AppID,
+		QQAppSecret: AppSecret,
+	}
+}
+
+//通过code来获取aceess_token及open_id
+func (oAuth *QQAuth) GetQQAccessToken(code string, state string, redirectUrl string) (string, error) {
+	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%v&client_secret=%v&code=%v&state=%v&redirect_uri=%v`,
+		oAuth.QQAppID, oAuth.QQAppSecret, code, state, redirectUrl)
+	body, err := fetch.Cmd(fetch.Request{
+		Method: "GET",
+		URL:    url,
+	})
+	if err != nil {
+		return "", err
+	}
+	params := utils.ParseUrlString(string(body))
+	accessToken, ok := params["access_token"]
+	if !ok {
+		if msg, ok := params["msg"]; ok {
+			return "", errors.New(msg)
+		} else {
+			return "", nil
+		}
+	}
+	return accessToken, nil
+}
+func (oAuth *QQAuth) GetQQOpenId(accessToken string) (string, error) {
+	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/me?access_token=%v`,
+		accessToken)
+	body, err := fetch.Cmd(fetch.Request{
+		Method: "GET",
+		URL:    url,
+	})
+	if err != nil {
+		return "", err
+	}
+	var resData map[string]string
+	err = json.Unmarshal(body, &resData)
+	if err != nil {
+		return "", nil
+	}
+	openid, ok := resData["openid"]
+	if ok {
+		return openid, nil
+	} else {
+		return "", nil
+	}
+}
 
 // User user
-func GetQQUserInfo(accessToken, openID string, typ int64) (*QQ, error) {
-	var appid string
-	if typ == 1 {
-		appid = AndroidQQAppId
-	} else {
-		appid = IosQQAppId
-	}
+func (oAuth *QQAuth) GetQQUserInfo(accessToken, openID string, typ int64) (*QQ, error) {
 	var result QQ
 	url := fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s",
 		accessToken,
-		appid,
+		oAuth.QQAppID,
 		openID,
 	)
 	body, err := fetch.Cmd(fetch.Request{

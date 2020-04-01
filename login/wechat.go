@@ -43,13 +43,6 @@ func GetWeChatUserInfo(accessToken, openID string) (*WeChatInfo, error) {
 	return &result, err
 }
 
-//一些有关微信方面的操作
-var (
-	//h5方面的微信,游戏客户端的不需要下面这两个参数
-	WeChatAppID = ""
-	WeChatAppSecret   = ""
-)
-
 type WeChatToken struct {
 	AccessToken  string `json:"access_token"`
 	ExpiresIn    int64  `json:"expires_in"`
@@ -58,10 +51,22 @@ type WeChatToken struct {
 	Scope        string `json:"scope"`
 }
 
+type WeChatAuth struct {
+	WeChatAppID     string
+	WeChatAppSecret string
+}
+
+func NewWeChatAuth(AppID, AppSecret string) *WeChatAuth {
+	return &WeChatAuth{
+		WeChatAppID:     AppID,
+		WeChatAppSecret: AppSecret,
+	}
+}
+
 //通过code来获取aceess_token及open_id
-func GetWeChatOpenIdAccessToken(code string) (*WeChatToken, error) {
+func (oAuth *WeChatAuth)GetWeChatOpenIdAccessToken(code string) (*WeChatToken, error) {
 	url := fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?"+
-		"appid=%v&secret=%v&code=%v&grant_type=authorization_code", WeChatAppID, WeChatAppSecret, code)
+		"appid=%v&secret=%v&code=%v&grant_type=authorization_code", oAuth.WeChatAppID, oAuth.WeChatAppSecret, code)
 	body, err := fetch.Cmd(fetch.Request{
 		Method: "GET",
 		URL:    url,
@@ -95,15 +100,15 @@ type WeChatSign struct {
 	Signature string `json:"signature"`
 }
 
-func getAccessToken() (string, error) {
+func (oAuth *WeChatAuth)getAccessToken() (string, error) {
 	var result AccessToken
-	keyAccessToken := fmt.Sprintf("access_token_%s", WeChatAppID)
+	keyAccessToken := fmt.Sprintf("access_token_%s", oAuth.WeChatAppID)
 	var accessToken string
 	var err error
 	val := cache.MemCache.GetString(keyAccessToken)
 	if val == "" { //doesn't exist
 		url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
-			WeChatAppID, WeChatAppSecret)
+			oAuth.WeChatAppID, oAuth.WeChatAppSecret)
 		var body []byte
 		body, err = fetch.Cmd(fetch.Request{
 			Method: "GET",
@@ -131,19 +136,19 @@ func getAccessToken() (string, error) {
 	}
 	return accessToken, err
 }
-func GetWeChatTicket(uri string) (*WeChatSign, error) {
-	accessToken, err := getAccessToken()
+func (oAuth *WeChatAuth)GetWeChatTicket(uri string) (*WeChatSign, error) {
+	accessToken, err := oAuth.getAccessToken()
 	if err != nil {
 		return nil, err
 	}
-	return getWeChatTicket(accessToken, uri)
+	return oAuth.getWeChatTicket(accessToken, uri)
 }
 
-func getWeChatTicket(accessToken, uri string) (*WeChatSign, error) {
+func (oAuth *WeChatAuth)getWeChatTicket(accessToken, uri string) (*WeChatSign, error) {
 	var result WeChatTicket
 	var ticket string
 	var err error
-	keyTicket := fmt.Sprintf("jsapi_ticket_%s", WeChatAppID)
+	keyTicket := fmt.Sprintf("jsapi_ticket_%s", oAuth.WeChatAppID)
 	val := cache.MemCache.GetString(keyTicket)
 	if val == "" { //doesn't exist
 		url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%v&type=jsapi", accessToken)
@@ -178,7 +183,7 @@ func getWeChatTicket(accessToken, uri string) (*WeChatSign, error) {
 	signStr := Signature(str)
 
 	sign := WeChatSign{
-		AppId:     WeChatAppID,
+		AppId:     oAuth.WeChatAppID,
 		NonceStr:  nonceStr,
 		Timestamp: timestamp,
 		Signature: signStr,
