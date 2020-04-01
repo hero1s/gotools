@@ -43,7 +43,7 @@ func SubscribeMessage(channel string, msg_func func(msg *redis.Message)) {
 	}
 	ch := pubsub.Channel()
 	for msg := range ch {
-		log.Info("接受到消息:%v-->%v", msg.Channel, msg.Payload)
+		log.Debug("接受到消息:%v-->%v", msg.Channel, msg.Payload)
 		msg_func(msg)
 	}
 }
