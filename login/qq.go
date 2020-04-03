@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/hero1s/gotools/log"
 	"github.com/hero1s/gotools/login/fetch"
 	"github.com/hero1s/gotools/utils"
 )
@@ -80,10 +81,11 @@ func (oAuth *QQAuth) GetQQOpenId(accessToken string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	log.Debug("获取QQ OpenID信息:%v",string(body))
 	var resData map[string]string
 	err = json.Unmarshal(body, &resData)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	openid, ok := resData["openid"]
 	if ok {

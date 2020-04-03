@@ -31,7 +31,7 @@ func UserCertifyOpenInitialize(realName, identity, returnUrl string) (string, er
 	}
 	log.Debug("初始化身份验证返回:%#v", rsp)
 	if rsp.Content.Code != "10000" {
-		log.Debug("初始化认证不成功:%v,%v", rsp.Content.Msg, rsp.Content.SubMsg)
+		log.Error("初始化认证不成功:%v,%v", rsp.Content.Msg, rsp.Content.SubMsg)
 		return "", errors.New("认证初始化不成功")
 	}
 	log.Debug(rsp.Content.CertifyId)
