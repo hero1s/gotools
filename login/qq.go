@@ -50,19 +50,22 @@ func NewQQAuth(AppID, AppSecret string) *QQAuth {
 }
 
 //通过code来获取aceess_token及open_id
-func (oAuth *QQAuth) GetQQAccessToken(code string, state string, redirectUrl string) (string, error) {
-	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%v&client_secret=%v&code=%v&state=%v&redirect_uri=%v`,
-		oAuth.QQAppID, oAuth.QQAppSecret, code, state, redirectUrl)
+func (oAuth *QQAuth) GetQQAccessToken(code string, redirectUrl string) (string, error) {
+	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%v&client_secret=%v&code=%v&redirect_uri=%v`,
+		oAuth.QQAppID, oAuth.QQAppSecret, code, redirectUrl)
 	body, err := fetch.Cmd(fetch.Request{
 		Method: "GET",
 		URL:    url,
 	})
 	if err != nil {
+		log.Error("获取QQ token失败:%v--%v", url, err)
 		return "", err
 	}
+	log.Debug("获取QQ token:%v--%v", url, string(body))
 	params := utils.ParseUrlString(string(body))
 	accessToken, ok := params["access_token"]
 	if !ok {
+		log.Error("获取QQ token失败:%v--%v", url, string(body))
 		if msg, ok := params["msg"]; ok {
 			return "", errors.New(msg)
 		} else {
@@ -79,12 +82,14 @@ func (oAuth *QQAuth) GetQQOpenId(accessToken string) (string, error) {
 		URL:    url,
 	})
 	if err != nil {
+		log.Error("获取OpenID失败:%v", err)
 		return "", err
 	}
-	log.Debug("获取QQ OpenID信息:%v",string(body))
+	log.Debug("获取QQ OpenID信息:%v", string(body))
 	var resData map[string]string
 	err = json.Unmarshal(body, &resData)
 	if err != nil {
+		log.Error("解析返回值错误:%v", err)
 		return "", err
 	}
 	openid, ok := resData["openid"]
