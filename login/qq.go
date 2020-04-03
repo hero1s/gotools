@@ -7,6 +7,7 @@ import (
 	"github.com/hero1s/gotools/log"
 	"github.com/hero1s/gotools/login/fetch"
 	"github.com/hero1s/gotools/utils"
+	"strings"
 )
 
 type (
@@ -58,14 +59,14 @@ func (oAuth *QQAuth) GetQQAccessToken(code string, redirectUrl string) (string, 
 		URL:    url,
 	})
 	if err != nil {
-		log.Error("获取QQ token失败:%v--%v", url, err)
+		log.Error("获取QQ token失败:%v   ## %v", url, err)
 		return "", err
 	}
-	log.Debug("获取QQ token:%v--%v", url, string(body))
+	log.Debug("获取QQ token:%v   ## %v", url, string(body))
 	params := utils.ParseUrlString(string(body))
 	accessToken, ok := params["access_token"]
 	if !ok {
-		log.Error("获取QQ token失败:%v--%v", url, string(body))
+		log.Error("获取QQ token失败:%v  ## %v", url, string(body))
 		if msg, ok := params["msg"]; ok {
 			return "", errors.New(msg)
 		} else {
@@ -84,6 +85,14 @@ func (oAuth *QQAuth) GetQQOpenId(accessToken string) (string, error) {
 	if err != nil {
 		log.Error("获取OpenID失败:%v", err)
 		return "", err
+	}
+	if strings.Contains(string(body), "callback") {
+		start := strings.Index(string(body), "(")
+		end := strings.LastIndex(string(body), ")")
+		if start+1 > end {
+			return "", errors.New("response body error:" + string(body))
+		}
+		body = body[start+1 : end]
 	}
 	log.Debug("获取QQ OpenID信息:%v", string(body))
 	var resData map[string]string
