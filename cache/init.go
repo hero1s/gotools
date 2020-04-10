@@ -181,3 +181,12 @@ func EncodeJson(data interface{}) ([]byte, error) {
 func DecodeJson(data []byte, to interface{}) error {
 	return json.Unmarshal(data, to)
 }
+
+//将一个数据结构转填充另一个数据结构
+func ChangeStructByEncodeJson(from interface{}, to interface{}) error {
+	data, err := EncodeJson(from)
+	if err != nil{
+		return err
+	}
+	return DecodeJson(data, to)
+}
