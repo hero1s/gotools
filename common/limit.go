@@ -20,7 +20,7 @@ func AccessLimit(key string, frequency int64, expireTime int64) bool {
 		return true
 	}
 	f := cache.MemCache.GetInt64(key)
-	if f < frequency {// 内存模式不会修改过期时间
+	if f < frequency { // 内存模式不会修改过期时间
 		cache.MemCache.Incr(key)
 		return true
 	}
@@ -29,7 +29,7 @@ func AccessLimit(key string, frequency int64, expireTime int64) bool {
 }
 
 //一天n次限制
-func LimitDay(key string, id uint64, n int64,logLimit bool) bool {
+func LimitDay(key string, id uint64, n int64, logLimit bool) bool {
 	key = GetDateKey("d", key, id)
 	re := cache.Redis.Incr(key)
 	cache.Redis.Expire(key, time.Hour*24)
@@ -84,5 +84,21 @@ func CheckErrorLock(key string, isRight bool, limitCount, lockHour int64) bool {
 	cache.RedisCache.Expire(key, time.Hour*time.Duration(lockHour))
 
 	log.Info("验证错误:%v 计数:%v", key, count+1)
+	return true
+}
+
+// 获取一个key
+func GetFormatKey(key string, value interface{}) string {
+	return fmt.Sprintf("%v:%v", key, value)
+}
+
+//多少秒内限制多少次
+func TimeLimit(uid uint64, key string, s time.Duration) bool {
+	key = GetFormatKey(key, uid)
+	re := cache.Redis.Exists(key)
+	if re.Val() > 0 {
+		return false
+	}
+	cache.Redis.Set(key, "1", time.Second*s)
 	return true
 }
