@@ -75,6 +75,7 @@ func UnifiedOrder(moneyFee int64, describe, orderId, tradeType, deviceInfo, open
 		pac := "prepay_id=" + wxRsp.PrepayId
 		sign := gopay.GetH5PaySign(wxRsp.Appid, wxRsp.NonceStr, pac, gopay.SignType_MD5, timeStamp, getPayParam(tradeType).WeChatKey)
 		c["paySign"] = sign
+		c["mweb_url"] = wxRsp.MwebUrl
 	}else if tradeType == gopay.TradeType_Native {
 		c["code_url"] = wxRsp.CodeUrl
 	}
