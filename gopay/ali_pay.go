@@ -19,7 +19,8 @@ func InitAliPay(isProd bool) {
 }
 
 //* 手机网站支付接口2.0（手机网站支付）：client.AliPayTradeWapPay()
-func AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl string) (string, error) {
+func AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl,returnUrl string) (string, error) {
+	AliPayClient.SetReturnUrl(returnUrl)
 	//请求参数
 	body := make(gopay.BodyMap)
 	body.Set("subject", describe)
@@ -37,7 +38,8 @@ func AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl string) (strin
 }
 
 //* 统一收单下单并支付页面接口（电脑网站支付）：client.AliPayTradePagePay()
-func AliPayTradePagePay(moneyFee int64, describe, orderId string) (string, error) {
+func AliPayTradePagePay(moneyFee int64, describe, orderId string,returnUrl string) (string, error) {
+	AliPayClient.SetReturnUrl(returnUrl)
 	//请求参数
 	body := make(gopay.BodyMap)
 	body.Set("subject", describe)
