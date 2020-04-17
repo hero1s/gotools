@@ -64,9 +64,9 @@ func NewWeChatAuth(AppID, AppSecret string) *WeChatAuth {
 }
 
 //通过code来获取aceess_token及open_id
-func (oAuth *WeChatAuth)GetWeChatOpenIdAccessToken(code string) (*WeChatToken, error) {
+func (oAuth *WeChatAuth)GetWeChatOpenIdAccessToken(code string, redirectUrl string) (*WeChatToken, error) {
 	url := fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?"+
-		"appid=%v&secret=%v&code=%v&grant_type=authorization_code", oAuth.WeChatAppID, oAuth.WeChatAppSecret, code)
+		"appid=%v&secret=%v&code=%v&grant_type=authorization_code&redirect_uri=%v", oAuth.WeChatAppID, oAuth.WeChatAppSecret, code,redirectUrl)
 	body, err := fetch.Cmd(fetch.Request{
 		Method: "GET",
 		URL:    url,
