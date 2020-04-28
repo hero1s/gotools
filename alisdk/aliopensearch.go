@@ -105,16 +105,12 @@ func PushSearchMore(appName, tableName string, cmd string, items ...interface{})
 }
 
 //搜索(非必选参数使用默认)
-func Search(appName, query string) (SearchResp, error) {
+func Search(args SearchArgs) (SearchResp, error) {
 	client := newClient()
 	var resp interface{}
 	var search SearchResp
-	var args SearchArgs
-	args.Query = query
-	args.Index_name = appName
-
 	err := client.Search(args, &resp)
-	log.Debug(fmt.Sprintf("搜索%s--%s result:%#v--err:%#v", appName, query, resp, err))
+	log.Debug(fmt.Sprintf("搜索%v result:%#v--err:%#v", args, resp, err))
 	if err == nil {
 		err = stringutils.ChangeJsonStruct(resp, &search)
 	}
@@ -153,7 +149,7 @@ func Suggest(appName, suggestName, query string, filterSearch string) []string {
 	for _, v := range sug.Suggestions {
 		if flagFilter == true {
 			query := fmt.Sprintf("query=default:%s%s", v.Suggestion, filterSearch)
-			resp1, err1 := Search(appName, query)
+			resp1, err1 := Search(SearchArgs{Index_name: appName, Query: query})
 			if err1 == nil && resp1.Result.Num > 0 {
 				res = append(res, v.Suggestion)
 			}
