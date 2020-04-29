@@ -70,6 +70,7 @@ var (
 	ParamsError         = errors.New("1000")
 	ParamsNotFit        = errors.New("1001")
 	ParamsCannotBeEmpty = errors.New("1002")
+	OperateLimit        = errors.New("1003")
 
 	//逻辑错误
 	RecordNotFound = errors.New("2000")
@@ -101,11 +102,13 @@ var ErrorCode = map[error][]string{
 	ParamsError:         {"params error", "参数校验错误"},
 	ParamsNotFit:        {"params not fit", "参数不符合要求"},
 	ParamsCannotBeEmpty: {"params cannot be empty", "参数不能为空"},
-	FrozenUser:          {"frozen user", "用户已封号"},
-	FrozenDevice:        {"frozen device", "该设备已被禁用"},
-	CancelUser:          {"cancel user", "此账号已注销"},
+	OperateLimit:        {"operate limit", "操作频繁"},
 
-	RecordNotFound:     {"record not found", "记录不存在"},
+	RecordNotFound: {"record not found", "记录不存在"},
+	FrozenUser:     {"frozen user", "用户已封号"},
+	FrozenDevice:   {"frozen device", "该设备已被禁用"},
+	CancelUser:     {"cancel user", "此账号已注销"},
+
 	Unauthorized:       {"unauthorized access", "未授权访问"},
 	LoginFail:          {"invalid username or password", "账号或密码不正确"},
 	UserAlreadyExist:   {"user already exist", "用户已存在"},
