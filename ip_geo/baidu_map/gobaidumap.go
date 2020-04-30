@@ -17,8 +17,11 @@ const (
 
 // defaultAppKey 百度地图 defaultAppKey
 var defaultAppKey string = "" // baidu's
-func InitBaiduMap(appKey string) {
+var defaultCoor = "bd09ll"
+
+func InitBaiduMap(appKey string, coor string) {
 	defaultAppKey = appKey
+	defaultCoor = coor
 }
 
 // GetAddressViaGEO 通过 GEO 坐标信息获取地址

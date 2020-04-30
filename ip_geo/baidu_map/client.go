@@ -72,7 +72,7 @@ func (bc *BaiduMapClient) GetGeoViaAddress(address string) (*StructAddressToGEO,
 func (bc *BaiduMapClient) GetAddressViaIP(address string) (*StructIPToAddress, error) {
 	res := new(StructIPToAddress)
 
-	parameter := fmt.Sprintf("&ip=%s&output=json&pois=0", address)
+	parameter := fmt.Sprintf("&ip=%s&output=json&pois=0&coor=%s", address,defaultCoor)
 	reqURL := fmt.Sprintf("%s%s%s", reqURLForIP, bc.GetAk(), parameter)
 
 	res2, err := requestBaidu("GetAddressViaIP", reqURL)
