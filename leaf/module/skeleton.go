@@ -5,6 +5,7 @@ import (
 	"github.com/hero1s/gotools/leaf/console"
 	"github.com/hero1s/gotools/leaf/go"
 	"github.com/hero1s/gotools/leaf/timer"
+	"github.com/hero1s/gotools/log"
 	"time"
 )
 
@@ -69,6 +70,7 @@ func (s *Skeleton) Run(closeSig chan bool) {
 
 func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer.Timer {
 	if s.TimerDispatcherLen == 0 {
+		log.Critical("invalid TimerDispatcherLen")
 		panic("invalid TimerDispatcherLen")
 	}
 
@@ -77,6 +79,7 @@ func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer.Timer {
 
 func (s *Skeleton) CronFunc(cronExpr *timer.CronExpr, cb func()) *timer.Cron {
 	if s.TimerDispatcherLen == 0 {
+		log.Critical("invalid TimerDispatcherLen")
 		panic("invalid TimerDispatcherLen")
 	}
 
@@ -85,6 +88,7 @@ func (s *Skeleton) CronFunc(cronExpr *timer.CronExpr, cb func()) *timer.Cron {
 
 func (s *Skeleton) Go(f func(), cb func()) {
 	if s.GoLen == 0 {
+		log.Critical("invalid GoLen")
 		panic("invalid GoLen")
 	}
 
@@ -93,6 +97,7 @@ func (s *Skeleton) Go(f func(), cb func()) {
 
 func (s *Skeleton) NewLinearContext() *g.LinearContext {
 	if s.GoLen == 0 {
+		log.Critical("invalid GoLen")
 		panic("invalid GoLen")
 	}
 
@@ -101,6 +106,7 @@ func (s *Skeleton) NewLinearContext() *g.LinearContext {
 
 func (s *Skeleton) AsynCall(server *chanrpc.Server, id interface{}, args ...interface{}) {
 	if s.AsynCallLen == 0 {
+		log.Critical("invalid AsynCallLen")
 		panic("invalid AsynCallLen")
 	}
 
@@ -110,6 +116,7 @@ func (s *Skeleton) AsynCall(server *chanrpc.Server, id interface{}, args ...inte
 
 func (s *Skeleton) RegisterChanRPC(id interface{}, f interface{}) {
 	if s.ChanRPCServer == nil {
+		log.Critical("invalid ChanRPCServer")
 		panic("invalid ChanRPCServer")
 	}
 

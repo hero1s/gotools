@@ -70,10 +70,12 @@ func (s *Server) Register(id interface{}, f interface{}) {
 	case func([]interface{}) interface{}:
 	case func([]interface{}) []interface{}:
 	default:
+		log.Critical(fmt.Sprintf("function id %v: definition of function is invalid", id))
 		panic(fmt.Sprintf("function id %v: definition of function is invalid", id))
 	}
 
 	if _, ok := s.functions[id]; ok {
+		log.Critical(fmt.Sprintf("function id %v: already registered", id))
 		panic(fmt.Sprintf("function id %v: already registered", id))
 	}
 
@@ -123,7 +125,7 @@ func (s *Server) exec(ci *CallInfo) (err error) {
 		ret := ci.f.(func([]interface{}) []interface{})(ci.args)
 		return s.ret(ci, &RetInfo{ret: ret})
 	}
-
+	log.Critical("bug")
 	panic("bug")
 }
 
@@ -234,6 +236,7 @@ func (c *Client) f(id interface{}, n int) (f interface{}, err error) {
 	case 2:
 		_, ok = f.(func([]interface{}) []interface{})
 	default:
+		log.Critical("bug")
 		panic("bug")
 	}
 
@@ -321,6 +324,7 @@ func (c *Client) asynCall(id interface{}, args []interface{}, cb interface{}, n 
 
 func (c *Client) AsynCall(id interface{}, _args ...interface{}) {
 	if len(_args) < 1 {
+		log.Critical("callback function not found")
 		panic("callback function not found")
 	}
 
@@ -336,6 +340,7 @@ func (c *Client) AsynCall(id interface{}, _args ...interface{}) {
 	case func([]interface{}, error):
 		n = 2
 	default:
+		log.Critical("definition of callback function is invalid")
 		panic("definition of callback function is invalid")
 	}
 
@@ -371,6 +376,7 @@ func execCb(ri *RetInfo) {
 	case func([]interface{}, error):
 		ri.cb.(func([]interface{}, error))(assert(ri.ret), ri.err)
 	default:
+		log.Critical("bug")
 		panic("bug")
 	}
 	return

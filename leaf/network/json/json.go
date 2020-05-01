@@ -151,7 +151,7 @@ func (p *Processor) Unmarshal(data []byte) (interface{}, error) {
 			return msg, json.Unmarshal(data, msg)
 		}
 	}
-
+	log.Critical("bug")
 	panic("bug")
 }
 
