@@ -74,7 +74,7 @@ func (tcpConn *TCPConn) Close() {
 
 func (tcpConn *TCPConn) doWrite(b []byte) {
 	if len(tcpConn.writeChan) == cap(tcpConn.writeChan) {
-		log.Debug("close conn: channel full")
+		log.Info("close conn: channel full")
 		tcpConn.doDestroy()
 		return
 	}

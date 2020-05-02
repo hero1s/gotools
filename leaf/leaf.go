@@ -34,7 +34,7 @@ func Run(mods ...module.Module) {
 }
 //内部模块启动
 func RunInside(end chan bool, mods ...module.Module) {
-	log.Debug("Leaf starting up")
+	log.Info("Leaf starting up")
 
 	// module
 	for i := 0; i < len(mods); i++ {
@@ -50,7 +50,7 @@ func RunInside(end chan bool, mods ...module.Module) {
 
 	// close
 	sig := <-end
-	log.Debug("Leaf closing down (signal: %v)", sig)
+	log.Info("Leaf closing down (signal: %v)", sig)
 	console.Destroy()
 	cluster.Destroy()
 	module.Destroy()

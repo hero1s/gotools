@@ -2,10 +2,12 @@ package gate
 
 import (
 	"github.com/hero1s/gotools/leaf/chanrpc"
+	"github.com/hero1s/gotools/leaf/conf"
 	"github.com/hero1s/gotools/leaf/network"
 	"github.com/hero1s/gotools/log"
 	"net"
 	"reflect"
+	"runtime"
 	"time"
 )
 
@@ -90,22 +92,34 @@ type agent struct {
 }
 
 func (a *agent) Run() {
+	defer func() {// add by toney
+		if r := recover(); r != nil {
+			if conf.LenStackBuf > 0 {
+				buf := make([]byte, conf.LenStackBuf)
+				l := runtime.Stack(buf, false)
+				log.Error("%v: %s", r, buf[:l])
+			} else {
+				log.Error("%v", r)
+			}
+		}
+	}()
+
 	for {
 		data, err := a.conn.ReadMsg()
 		if err != nil {
-			log.Debug("read message: %v", err)
+			log.Error("read message: %v", err)
 			break
 		}
 
 		if a.gate.Processor != nil {
 			msg, err := a.gate.Processor.Unmarshal(data)
 			if err != nil {
-				log.Debug("unmarshal message error: %v", err)
+				log.Error("unmarshal message error: %v", err)
 				break
 			}
 			err = a.gate.Processor.Route(msg, a)
 			if err != nil {
-				log.Debug("route message error: %v", err)
+				log.Error("route message error: %v", err)
 				break
 			}
 		}

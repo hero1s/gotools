@@ -91,7 +91,7 @@ func (server *TCPServer) run() {
 		if len(server.conns) >= server.MaxConnNum {
 			server.mutexConns.Unlock()
 			conn.Close()
-			log.Debug("too many connections")
+			log.Info("too many connections")
 			continue
 		}
 		server.conns[conn] = struct{}{}

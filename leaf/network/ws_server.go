@@ -42,7 +42,7 @@ func (handler *WSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	conn, err := handler.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Debug("upgrade error: %v", err)
+		log.Error("upgrade error: %v", err)
 		return
 	}
 	conn.SetReadLimit(int64(handler.maxMsgLen))
@@ -59,7 +59,7 @@ func (handler *WSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(handler.conns) >= handler.maxConnNum {
 		handler.mutexConns.Unlock()
 		conn.Close()
-		log.Debug("too many connections")
+		log.Info("too many connections")
 		return
 	}
 	handler.conns[conn] = struct{}{}
