@@ -3,9 +3,11 @@ package network
 import (
 	"errors"
 	"github.com/gorilla/websocket"
+	"github.com/hero1s/gotools/leaf/conf"
 	"github.com/hero1s/gotools/log"
 	"github.com/hero1s/gotools/utils"
 	"net"
+	"runtime"
 	"sync"
 )
 
@@ -93,8 +95,20 @@ func (wsConn *WSConn) RemoteAddr() net.Addr {
 }
 
 // goroutine not safe
-func (wsConn *WSConn) ReadMsg() ([]byte, error) {
-	_, b, err := wsConn.conn.ReadMessage()
+func (wsConn *WSConn) ReadMsg() (b []byte, err error) {
+	defer func() {// add by toney
+		if r := recover(); r != nil {
+			if conf.LenStackBuf > 0 {
+				buf := make([]byte, conf.LenStackBuf)
+				l := runtime.Stack(buf, false)
+				log.Error("%v: %s", r, buf[:l])
+			} else {
+				log.Error("%v", r)
+			}
+			err = errors.New("ReadMsg panic")
+		}
+	}()
+	_, b, err = wsConn.conn.ReadMessage()
 	return b, err
 }
 
