@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func InitLog(runMode string) *logs.BeeLogger {
+func InitLog(runMode string,dir string) *logs.BeeLogger {
 	DefaultLog = logs.NewLogger()
 	DefaultLog.EnableFuncCallDepth(true)
 	DefaultLog.SetLogFuncCallDepth(3)
@@ -18,7 +18,7 @@ func InitLog(runMode string) *logs.BeeLogger {
 		if err != nil {
 			panic(err)
 		}
-		logDir := filepath.Join(workPath, "log")
+		logDir := filepath.Join(workPath, dir)
 		logFile := filepath.Join(logDir, "log.txt")
 		if !isPathExist(logDir) {
 			oldMask := syscall.Umask(0)
