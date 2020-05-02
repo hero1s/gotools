@@ -115,7 +115,7 @@ func ParseUrlString(params string) map[string]string {
 		if ! strings.Contains(param, "=") {
 			continue
 		}
-		paramList :=strings.Split(param,"=")
+		paramList := strings.Split(param, "=")
 		paramsMap[paramList[0]] = paramList[1]
 	}
 	return paramsMap
@@ -205,8 +205,8 @@ func SafeGoroutine(f func()) {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Error("child goroutine panic occure,err:%v",r)
-				log.Error("stack:%v",debug.Stack())
+				log.Error("child goroutine panic occure,err:%v", r)
+				log.Error("stack:%v", debug.Stack())
 			}
 		}()
 		f()

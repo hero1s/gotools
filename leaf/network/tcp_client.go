@@ -2,6 +2,7 @@ package network
 
 import (
 	"github.com/hero1s/gotools/log"
+	"github.com/hero1s/gotools/utils"
 	"net"
 	"sync"
 	"time"
@@ -32,7 +33,9 @@ func (client *TCPClient) Start() {
 
 	for i := 0; i < client.ConnNum; i++ {
 		client.wg.Add(1)
-		go client.connect()
+		utils.SafeGoroutine(func() {
+			client.connect()
+		})
 	}
 }
 

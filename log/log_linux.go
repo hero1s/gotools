@@ -30,7 +30,7 @@ func InitLog(runMode string, dirs ...string) *logs.BeeLogger {
 			}
 			f, err := os.Create(logFile)
 			if err != nil {
-				println(err.Error(),logDir)
+				println(err.Error(),logFile)
 				panic(err)
 			}
 			f.Close()
