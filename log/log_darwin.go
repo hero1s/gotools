@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func InitLog(runMode string,dir string) *logs.BeeLogger {
+func InitLog(runMode string, dirs ...string) *logs.BeeLogger {
 	DefaultLog = logs.NewLogger()
 	DefaultLog.EnableFuncCallDepth(true)
 	DefaultLog.SetLogFuncCallDepth(3)
@@ -18,7 +18,10 @@ func InitLog(runMode string,dir string) *logs.BeeLogger {
 		if err != nil {
 			panic(err)
 		}
-		logDir := filepath.Join(workPath, dir)
+		logDir := filepath.Join(workPath)
+		for _, dir := range dirs {
+			logDir = filepath.Join(logDir, dir)
+		}
 		logFile := filepath.Join(logDir, "log.txt")
 		if !isPathExist(logDir) {
 			oldMask := syscall.Umask(0)
@@ -34,7 +37,7 @@ func InitLog(runMode string,dir string) *logs.BeeLogger {
 			syscall.Umask(oldMask)
 		} else {
 			if !isPathExist(logFile) {
-				f, err := os.OpenFile(logFile,os.O_RDWR|os.O_CREATE|os.O_APPEND,0755)
+				f, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 				if err != nil {
 					panic(err)
 				}

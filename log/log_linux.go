@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func InitLog(runMode string,dir string) *logs.BeeLogger {
+func InitLog(runMode string, dirs ...string) *logs.BeeLogger {
 	DefaultLog = logs.NewLogger()
 	DefaultLog.EnableFuncCallDepth(true)
 	DefaultLog.SetLogFuncCallDepth(3)
@@ -17,7 +17,10 @@ func InitLog(runMode string,dir string) *logs.BeeLogger {
 		if err != nil {
 			panic(err)
 		}
-		logDir := filepath.Join(workPath, dir)
+		logDir := filepath.Join(workPath)
+		for _, dir := range dirs {
+			logDir = filepath.Join(logDir, dir)
+		}
 		logFile := filepath.Join(logDir, "log.txt")
 		if !isPathExist(logDir) {
 			err = os.Mkdir(logDir, 0755)
