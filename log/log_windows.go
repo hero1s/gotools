@@ -20,6 +20,15 @@ func InitLog(runMode string, dirs ...string) *logs.BeeLogger {
 		logDir := filepath.Join(workPath)
 		for _, dir := range dirs {
 			logDir = filepath.Join(logDir, dir)
+			if !isPathExist(logDir) {
+				oldMask := syscall.Umask(0)
+				err = os.Mkdir(logDir, 0755)
+				if err != nil {
+					println(err.Error(), logDir)
+					panic(err)
+				}
+				syscall.Umask(oldMask)
+			}
 		}
 		logFile := filepath.Join(logDir, "log.txt")
 		if !isPathExist(logDir) {
