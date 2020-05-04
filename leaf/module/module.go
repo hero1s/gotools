@@ -3,7 +3,6 @@ package module
 import (
 	"github.com/hero1s/gotools/leaf/conf"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/utils"
 	"runtime"
 	"sync"
 )
@@ -38,9 +37,7 @@ func Init() {
 	for i := 0; i < len(mods); i++ {
 		m := mods[i]
 		m.wg.Add(1)
-		utils.SafeGoroutine(func() {
-			run(m)
-		})
+		go run(m)
 	}
 }
 

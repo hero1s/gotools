@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/utils"
 	"net"
 	"sync"
 )
@@ -25,7 +24,7 @@ func newWSConn(conn *websocket.Conn, pendingWriteNum int, maxMsgLen uint32) *WSC
 	wsConn.writeChan = make(chan []byte, pendingWriteNum)
 	wsConn.maxMsgLen = maxMsgLen
 
-	utils.SafeGoroutine(func() {
+	go func() {
 		for b := range wsConn.writeChan {
 			if b == nil {
 				break
@@ -41,7 +40,7 @@ func newWSConn(conn *websocket.Conn, pendingWriteNum int, maxMsgLen uint32) *WSC
 		wsConn.Lock()
 		wsConn.closeFlag = true
 		wsConn.Unlock()
-	})
+	}()
 
 	return wsConn
 }

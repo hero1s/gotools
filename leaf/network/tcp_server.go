@@ -2,7 +2,6 @@ package network
 
 import (
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/utils"
 	"net"
 	"sync"
 	"time"
@@ -29,9 +28,7 @@ type TCPServer struct {
 
 func (server *TCPServer) Start() {
 	server.init()
-	utils.SafeGoroutine(func() {
-		server.run()
-	})
+	go server.run()
 }
 
 func (server *TCPServer) init() {
@@ -101,7 +98,7 @@ func (server *TCPServer) run() {
 
 		tcpConn := newTCPConn(conn, server.PendingWriteNum, server.msgParser)
 		agent := server.NewAgent(tcpConn)
-		utils.SafeGoroutine(func() {
+		go func() {
 			agent.Run()
 
 			// cleanup
@@ -112,7 +109,7 @@ func (server *TCPServer) run() {
 			agent.OnClose()
 
 			server.wgConns.Done()
-		})
+		}()
 	}
 }
 

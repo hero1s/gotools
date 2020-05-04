@@ -2,7 +2,6 @@ package network
 
 import (
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/utils"
 	"net"
 	"sync"
 )
@@ -23,7 +22,7 @@ func newTCPConn(conn net.Conn, pendingWriteNum int, msgParser *MsgParser) *TCPCo
 	tcpConn.writeChan = make(chan []byte, pendingWriteNum)
 	tcpConn.msgParser = msgParser
 
-	utils.SafeGoroutine(func() {
+	go func() {
 		for b := range tcpConn.writeChan {
 			if b == nil {
 				break
@@ -39,7 +38,7 @@ func newTCPConn(conn net.Conn, pendingWriteNum int, msgParser *MsgParser) *TCPCo
 		tcpConn.Lock()
 		tcpConn.closeFlag = true
 		tcpConn.Unlock()
-	})
+	}()
 
 	return tcpConn
 }

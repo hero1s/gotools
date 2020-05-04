@@ -3,7 +3,6 @@ package network
 import (
 	"github.com/gorilla/websocket"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/utils"
 	"sync"
 	"time"
 )
@@ -29,9 +28,7 @@ func (client *WSClient) Start() {
 
 	for i := 0; i < client.ConnNum; i++ {
 		client.wg.Add(1)
-		utils.SafeGoroutine(func() {
-			client.connect()
-		})
+		go client.connect()
 	}
 }
 

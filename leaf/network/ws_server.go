@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"github.com/gorilla/websocket"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/utils"
 	"net"
 	"net/http"
 	"sync"
@@ -138,9 +137,7 @@ func (server *WSServer) Start() {
 		MaxHeaderBytes: 1024,
 	}
 
-	utils.SafeGoroutine(func() {
-		httpServer.Serve(ln)
-	})
+	go httpServer.Serve(ln)
 }
 
 func (server *WSServer) Close() {
