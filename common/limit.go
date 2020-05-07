@@ -65,7 +65,6 @@ func GetDateKey(time_type string, key string, id interface{}) string {
 	} else if time_type == "m" {
 		str = time.Now().Format("200601")
 	}
-	log.Debug(fmt.Sprintf("获得一个key:%v:%v:%v", key, str, id))
 	return fmt.Sprintf("%v:%v:%v", key, str, id)
 }
 
