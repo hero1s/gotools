@@ -27,24 +27,6 @@ type AliPayParam struct {
 	AliAppPrivateKeyFile string `json:"ali_app_private_key_file" desc:"应用私钥"`
 }
 
-type PayParamCfg struct {
-	WechatPay   WeChatPayParam `json:"wechat_pay" desc:"微信支付参数"`
-	WechatJsPay WeChatPayParam `json:"wechat_js_pay" desc:"微信JSAPI支付参数"`
-	AliPay      AliPayParam    `json:"ali_pay" desc:"支付包支付参数"`
-}
-
-var (
-	PayParam PayParamCfg
-)
-
-//初始化支付相关
-func InitPayInfo(WeChatIsProd, AliIsProd bool) error {
-	InitWechatPay(WeChatIsProd)
-	InitAliPay(AliIsProd)
-
-	return nil
-}
-
 func keyFromFile(fileName string) []byte {
 	data, _ := ioutil.ReadFile(fileName)
 	return data

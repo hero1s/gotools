@@ -10,7 +10,7 @@ import (
 )
 
 //UserCertifyOpenInitialize 身份认证初始化服务 https://docs.open.alipay.com/api_2/alipay.user.certify.open.initialize
-func UserCertifyOpenInitialize(realName, identity, returnUrl string) (string, error) {
+func (c *AliPayClient) UserCertifyOpenInitialize(realName, identity, returnUrl string) (string, error) {
 	log.Debug("========== UserCertifyOpenInitialize ==========")
 	var p = gopay.UserCertifyOpenInitialize{}
 	p.OuterOrderNo = utils.GenStringUUID()
@@ -24,7 +24,7 @@ func UserCertifyOpenInitialize(realName, identity, returnUrl string) (string, er
 	pxx, _ := json.Marshal(p)
 	log.Debug("身份初始化验证参数:%v", string(pxx))
 
-	rsp, err := AliPayClient.UserCertifyOpenInitialize(common.ChangeStructToJsonMap(p))
+	rsp, err := c.PayClient.UserCertifyOpenInitialize(common.ChangeStructToJsonMap(p))
 	if err != nil {
 		log.Error("身份验证初始化失败:%v", err)
 		return "", err
@@ -39,12 +39,12 @@ func UserCertifyOpenInitialize(realName, identity, returnUrl string) (string, er
 }
 
 //UserCertifyOpenCertify 身份认证开始认证 https://docs.open.alipay.com/api_2/alipay.user.certify.open.certify
-func UserCertifyOpenCertify(certifyId string) (string, error) {
+func (c *AliPayClient) UserCertifyOpenCertify(certifyId string) (string, error) {
 	log.Debug("========== UserCertifyOpenCertify ==========")
 	body := map[string]interface{}{
 		"certify_id": certifyId,
 	}
-	rsp, err := AliPayClient.UserCertifyOpenCertify(body)
+	rsp, err := c.PayClient.UserCertifyOpenCertify(body)
 	if err != nil {
 		log.Error("%#v 身份认证错误:%v", body, err)
 	}
@@ -53,11 +53,11 @@ func UserCertifyOpenCertify(certifyId string) (string, error) {
 }
 
 // UserCertifyOpenQuery 身份认证记录查询 https://docs.open.alipay.com/api_2/alipay.user.certify.open.query/
-func UserCertifyOpenQuery(certifyId string) (rsp gopay.UserCertifyOpenQueryRsp, err error) {
+func (c *AliPayClient) UserCertifyOpenQuery(certifyId string) (rsp gopay.UserCertifyOpenQueryRsp, err error) {
 	log.Debug("========== UserCertifyOpenQuery ==========")
 	var p = gopay.UserCertifyOpenQuery{}
 	p.CertifyId = certifyId
-	rsp, err = AliPayClient.UserCertifyOpenQuery(common.ChangeStructToJsonMap(p))
+	rsp, err = c.PayClient.UserCertifyOpenQuery(common.ChangeStructToJsonMap(p))
 	if err != nil {
 		log.Error("身份记录查询错误:%v", err)
 		return
