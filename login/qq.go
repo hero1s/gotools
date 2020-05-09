@@ -75,38 +75,40 @@ func (oAuth *QQAuth) GetQQAccessToken(code string, redirectUrl string) (string, 
 	}
 	return accessToken, nil
 }
-func (oAuth *QQAuth) GetQQOpenId(accessToken string) (string, error) {
-	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/me?access_token=%v`,
+
+type QQOpenIdRep struct {
+	ClientId string `json:"client_id"`
+	Openid string `json:"openid"`
+	Unionid string `json:"unionid"`
+}
+
+func (oAuth *QQAuth) GetQQOpenId(accessToken string) (QQOpenIdRep, error) {
+	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/me?access_token=%v&unionid=1`,
 		accessToken)
 	body, err := fetch.Cmd(fetch.Request{
 		Method: "GET",
 		URL:    url,
 	})
+	var rep QQOpenIdRep
 	if err != nil {
 		log.Error("获取OpenID失败:%v", err)
-		return "", err
+		return rep, err
 	}
 	if strings.Contains(string(body), "callback") {
 		start := strings.Index(string(body), "(")
 		end := strings.LastIndex(string(body), ")")
 		if start+1 > end {
-			return "", errors.New("response body error:" + string(body))
+			return rep, errors.New("response body error:" + string(body))
 		}
 		body = body[start+1 : end]
 	}
 	log.Debug("获取QQ OpenID信息:%v", string(body))
-	var resData map[string]string
-	err = json.Unmarshal(body, &resData)
+	err = json.Unmarshal(body, &rep)
 	if err != nil {
 		log.Error("解析返回值错误:%v", err)
-		return "", err
+		return rep, err
 	}
-	openid, ok := resData["openid"]
-	if ok {
-		return openid, nil
-	} else {
-		return "", nil
-	}
+	return rep,nil
 }
 
 // User user
