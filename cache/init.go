@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/go-redis/redis"
 	"github.com/hero1s/gotools/log"
+	"github.com/hero1s/gotools/utils"
 	"time"
 )
 
@@ -46,6 +47,26 @@ func SubscribeMessage(channel string, msg_func func(msg *redis.Message)) {
 		log.Debug("接受到消息:%v-->%v", msg.Channel, msg.Payload)
 		msg_func(msg)
 	}
+}
+
+//发布消息
+func PublishQueueMessage(queue string, data interface{}) {
+	Redis.LPush(queue, data)
+}
+
+//接受消息
+func SubscribeQueueMessage(queue string, timeOut time.Duration, msg_func func(msg string)) {
+	utils.SafeGoroutine(func() {
+		for ; ; {
+			ret := Redis.BRPop(timeOut, queue)
+			if ret.Err() == nil {
+				log.Debug("接受队列消息:%v--%v", queue, ret.Val())
+				for i := 0; i < len(ret.Val()); i++ {
+					msg_func(ret.Val()[i])
+				}
+			}
+		}
+	})
 }
 
 func InitCache(host, password, defaultKey string) error {
@@ -185,7 +206,7 @@ func DecodeJson(data []byte, to interface{}) error {
 //将一个数据结构转填充另一个数据结构
 func ChangeStructByEncodeJson(from interface{}, to interface{}) error {
 	data, err := EncodeJson(from)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	return DecodeJson(data, to)
