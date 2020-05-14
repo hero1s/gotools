@@ -39,6 +39,22 @@ func getDb(db string) (*mgo.Session, *mgo.Database) {
 }
 
 /*
+	设置索引
+*/
+func SetKeyIndex(db, collection string, keys []string) error {
+	ms, c := connect(db, collection)
+	defer ms.Close()
+	err := c.EnsureIndexKey(keys...)
+	return err
+}
+
+func GetKeyIndexs(db, collection string) ([]mgo.Index, error) {
+	ms, c := connect(db, collection)
+	defer ms.Close()
+	return c.Indexes()
+}
+
+/*
 	每次操作之后都要主动关闭 Session defer Session.Close()
 	db:操作的数据库
 	collection:操作的文档(表)
