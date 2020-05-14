@@ -20,6 +20,6 @@ func InitDB(aliasName, user, password, host, dbName string, debugLog bool, dueTi
 		orm.OnlyPrintFail = true
 	}
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	source := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&loc=Local", user, password, host, dbName)
+	source := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8,utf8mb4&loc=Local", user, password, host, dbName)
 	return orm.RegisterDataBase(aliasName, "mysql", source, params...)
 }

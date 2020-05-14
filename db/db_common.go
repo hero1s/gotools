@@ -180,6 +180,10 @@ func CheckNoExist(err error) bool {
 	return false
 }
 
+func (t *Table) FullTableName() string {
+	return t.DbName + "." + t.TableName
+}
+
 func (t *Table) NewOrm(multiOrm ...orm.Ormer) orm.Ormer {
 	o := NewOrm(multiOrm, t.DbName)
 	return o
