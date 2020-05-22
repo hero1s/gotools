@@ -212,3 +212,14 @@ func SafeGoroutine(f func()) {
 		f()
 	}()
 }
+
+//安全执行异步函数
+func SafeCallFunc(f func()) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Error("call func panic occure,err:%v", r)
+			log.Error("stack:%v", debug.Stack())
+		}
+	}()
+	f()
+}
