@@ -47,7 +47,7 @@ func GenerateToken(claims CustomClaims) (string, error) {
 func DecodeTokenByStr(tokenStr string) (*CustomClaims, error) {
 	claims := &CustomClaims{}
 	parser := &jwt.Parser{}
-	token, err := parser.ParseWithClaims(tokenStr,claims, func(token *jwt.Token) (i interface{}, e error) {
+	token, err := parser.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (i interface{}, e error) {
 		return []byte(tokenSecret), nil
 	})
 	if err != nil {
@@ -60,6 +60,7 @@ func DecodeTokenByStr(tokenStr string) (*CustomClaims, error) {
 	}
 	return nil, wrapError(TokenInvalid)
 }
+
 // 函数在base_func.go
 func DecodeToken(r *http.Request) (*CustomClaims, error) {
 	token, err := request.ParseFromRequest(r, request.AuthorizationHeaderExtractor, func(token *jwt.Token) (i interface{}, e error) {
@@ -75,6 +76,12 @@ func DecodeToken(r *http.Request) (*CustomClaims, error) {
 		return claims, nil
 	}
 	return nil, wrapError(TokenInvalid)
+}
+
+//获取token字段
+func GetTokenFromRequest(r *http.Request) (string, error) {
+	tokenStr, err := request.AuthorizationHeaderExtractor.ExtractToken(r)
+	return tokenStr, err
 }
 
 // refresh token
