@@ -23,15 +23,27 @@ var (
 )
 
 type SearchResult struct {
-	Searchtime float64       `json:"searchtime"`
-	Total      int64         `json:"total"`
-	Num        int64         `json:"num"`
-	Viewtotal  int64         `json:"viewtotal"`
-	Items      []interface{} `json:"items"`
+	Searchtime float64 `json:"searchtime"`
+	Total      int64   `json:"total"`
+	Num        int64   `json:"num"`
+	Viewtotal  int64   `json:"viewtotal"`
+	Items      []*Item `json:"items"`
 }
 type SearchResp struct {
-	Status string       `json:"status"`
-	Result SearchResult `json:"result"`
+	Status    string       `json:"status"`
+	RequestId string       `json:"request_id"`
+	Result    SearchResult `json:"result"`
+	Errors    []*Error     `json:"errors"`
+}
+
+type Item struct {
+	Fields         map[string]string `json:"fields"`
+	SortExprValues []string          `json:"sortExprValues"`
+}
+
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 //map[searchtime:0.030263 total:1 num:1 viewtotal:1 items:[map[index_name:jiangbei_product description:小商品 id:1 name:toney]]
@@ -114,7 +126,9 @@ func Search(args SearchArgs) (SearchResp, error) {
 	if err == nil {
 		err = stringutils.ChangeJsonStruct(resp, &search)
 	}
-	log.Debug(fmt.Sprintf("search:%+v", search))
+	if search.Status != "OK" {
+		log.Info(fmt.Sprintf("search FAIL:%+v", search))
+	}
 	return search, err
 }
 
