@@ -107,7 +107,9 @@ func PushSearchMore(appName, tableName string, cmd string, items ...interface{})
 	log.Debug(args.Items)
 	var resp interface{}
 	err := client.Push(appName, args, &resp)
-	log.Debug(fmt.Sprintf("上传文档:%v--err:%v", resp, err))
+	if err != nil {
+		log.Info(fmt.Sprintf("上传文档:%v,%v--err:%v", args, resp, err))
+	}
 	return resp, err
 }
 
@@ -117,12 +119,14 @@ func Search(args SearchArgs) (SearchResp, error) {
 	var resp interface{}
 	var search SearchResp
 	err := client.Search(args, &resp)
-	log.Debug(fmt.Sprintf("搜索%v result:%#v--err:%#v", args, resp, err))
+
 	if err == nil {
 		err = stringutils.ChangeJsonStruct(resp, &search)
+	} else {
+		log.Info("search error:%v", err)
 	}
 	if search.Status != "OK" {
-		log.Info(fmt.Sprintf("search FAIL:%+v", search))
+		log.Info(fmt.Sprintf("search FAIL:%+v,%+v", args, search))
 	}
 	return search, err
 }
