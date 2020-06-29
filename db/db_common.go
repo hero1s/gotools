@@ -13,7 +13,7 @@ func NewOrmWithDB(db string) orm.Ormer {
 	return o
 }
 
-func NewMasterOrmWithDB(db string)orm.Ormer{
+func NewMasterOrmWithDB(db string) orm.Ormer {
 	o := orm.NewOrm()
 	o.Using(GetMasterAliasName(db))
 	return o
@@ -222,6 +222,9 @@ func (t *Table) DeleteTableRecord(conditionSql string, multiOrm ...orm.Ormer) (i
 
 // 获取单行记录
 func (t *Table) SingleRecordByAny(conditionSql string, record interface{}, multiOrm ...orm.Ormer) error {
+	if len(multiOrm) == 0 {
+		return SingleRecordByAny(t.DbName, t.TableName, conditionSql, record, t.NewMasterOrm())
+	}
 	return SingleRecordByAny(t.DbName, t.TableName, conditionSql, record, multiOrm...)
 }
 
