@@ -13,6 +13,12 @@ func NewOrmWithDB(db string) orm.Ormer {
 	return o
 }
 
+func NewMasterOrmWithDB(db string)orm.Ormer{
+	o := orm.NewOrm()
+	o.Using(GetMasterAliasName(db))
+	return o
+}
+
 func NewOrm(multiOrm []orm.Ormer, db ...string) (o orm.Ormer) {
 	if len(multiOrm) == 0 {
 		o = orm.NewOrm()
