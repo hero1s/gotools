@@ -195,6 +195,11 @@ func (t *Table) NewOrm(multiOrm ...orm.Ormer) orm.Ormer {
 	return o
 }
 
+func (t *Table) NewMasterOrm() orm.Ormer {
+	o := NewMasterOrmWithDB(t.DbName)
+	return o
+}
+
 func (t *Table) NewTableRecord(data map[string]interface{}, multiOrm ...orm.Ormer) (int64, error) {
 	return NewTableRecord(t.DbName, t.TableName, data, multiOrm...)
 }
