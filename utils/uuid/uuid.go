@@ -3,7 +3,7 @@ package uuid
 import (
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v7"
 	"github.com/hero1s/gotools/log"
 	"io"
 	"sync"

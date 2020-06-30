@@ -12,9 +12,9 @@ require (
 	github.com/gansidui/geohash v0.0.0-20141019080235-ebe5ba447f34
 	github.com/gansidui/nearest v0.0.0-20141019122829-a5d0cde6ef14
 	github.com/garyburd/redigo v1.6.0
-	github.com/go-redis/redis v6.14.2+incompatible
+	github.com/go-redis/redis/v7 v7.4.0
 	github.com/go-sql-driver/mysql v1.4.1
-	github.com/golang/protobuf v1.3.1
+	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/websocket v1.4.1
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/iGoogle-ink/gopay v1.3.9

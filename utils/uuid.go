@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v7"
 	"github.com/hero1s/gotools/log"
 	"github.com/hero1s/gotools/utils/uuid"
 	"strconv"
