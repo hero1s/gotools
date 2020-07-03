@@ -88,6 +88,23 @@ func MultiInsertSql(tableName string, data map[string][]interface{}) (values [][
 	return
 }
 
+func InsertOrUpdateAndAddSql(tableName string, addData map[string]interface{},upData map[string]interface{}) (values []interface{}, sql string) {
+	values, sql = InsertSql(tableName, addData)
+	sql = sql + " ON DUPLICATE KEY UPDATE "
+
+	field := ""
+	for k, v := range upData {
+		if field == "" {
+			field = fmt.Sprintf("`%v`=`%v`+?", k, k)
+		} else {
+			field = field + "," + fmt.Sprintf("`%v`=`%v`+?", k, k)
+		}
+		values = append(values, v)
+	}
+	sql = sql + field
+	return
+}
+
 func InsertOrUpdateSql(tableName string, data map[string]interface{}) (values []interface{}, sql string) {
 	values, sql = InsertSql(tableName, data)
 	sql = sql + " ON DUPLICATE KEY UPDATE "
@@ -104,6 +121,7 @@ func InsertOrUpdateSql(tableName string, data map[string]interface{}) (values []
 	sql = sql + field
 	return
 }
+
 
 func QuerySingleSql(tableName string, condition string) string {
 	if condition == "" {
