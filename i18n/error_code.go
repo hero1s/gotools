@@ -77,6 +77,8 @@ var (
 	FrozenUser     = errors.New("2001")
 	FrozenDevice   = errors.New("2002")
 	CancelUser     = errors.New("2003")
+	TeenageMode    = errors.New("2004")
+	TeenageTimeOut = errors.New("2005")
 
 	Unauthorized       = errors.New("4000")
 	LoginFail          = errors.New("4001")
@@ -108,6 +110,8 @@ var ErrorCode = map[error][]string{
 	FrozenUser:     {"frozen user", "用户已封号"},
 	FrozenDevice:   {"frozen device", "该设备已被禁用"},
 	CancelUser:     {"cancel user", "此账号已注销"},
+	TeenageMode:    {"teenage mode", "青少年模式功能限制"},
+	TeenageTimeOut: {"teenage time out", "青少年体验时间结束,请关闭青少年模式"},
 
 	Unauthorized:       {"unauthorized access", "未授权访问"},
 	LoginFail:          {"invalid username or password", "账号或密码不正确"},
