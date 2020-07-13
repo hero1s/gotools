@@ -19,7 +19,7 @@ func UpdateSql(tableName string, data map[string]interface{}, condition string) 
 	return
 }
 
-func UpdateAndAddSql(tableName string, data map[string]interface{}, condition string) (values []interface{}, sql string) {
+func UpdateByAddSql(tableName string, data map[string]interface{}, condition string) (values []interface{}, sql string) {
 	field := ""
 	for k, v := range data {
 		if field == "" {
@@ -88,7 +88,7 @@ func MultiInsertSql(tableName string, data map[string][]interface{}) (values [][
 	return
 }
 
-func InsertOrUpdateAndAddSql(tableName string, addData map[string]interface{},upData map[string]interface{}) (values []interface{}, sql string) {
+func InsertOrUpdateByAddSql(tableName string, addData map[string]interface{},upData map[string]interface{}) (values []interface{}, sql string) {
 	values, sql = InsertSql(tableName, addData)
 	sql = sql + " ON DUPLICATE KEY UPDATE "
 

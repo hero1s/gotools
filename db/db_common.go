@@ -112,10 +112,10 @@ func NewOrUpdateRecord(dbName, tableName string, data map[string]interface{}, mu
 	return n, i18n.WrapDatabaseError(err)
 }
 
-func NewOrUpdateAndAddRecord(dbName, tableName string, addData map[string]interface{}, upData map[string]interface{}, multiOrm ...orm.Ormer) (int64, error) {
+func NewOrUpdateByAddRecord(dbName, tableName string, addData map[string]interface{}, upData map[string]interface{}, multiOrm ...orm.Ormer) (int64, error) {
 	// filterData(data, t.TableField)
 	o := NewOrm(multiOrm, dbName)
-	values, sql := InsertOrUpdateAndAddSql(tableName, addData, upData)
+	values, sql := InsertOrUpdateByAddSql(tableName, addData, upData)
 	result, err := o.Raw(sql, values).Exec()
 	if err != nil {
 		return 0, i18n.WrapDatabaseError(err)
@@ -136,10 +136,10 @@ func UpdateTableRecord(dbName, tableName string, data map[string]interface{}, co
 	return n, i18n.WrapDatabaseError(err)
 }
 
-func UpdateAndAddTableRecord(dbName, tableName string, data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
+func UpdateByAddTableRecord(dbName, tableName string, data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
 	// filterData(data, t.TableField)
 	o := NewOrm(multiOrm, dbName)
-	values, sql := UpdateAndAddSql(tableName, data, conditionSql)
+	values, sql := UpdateByAddSql(tableName, data, conditionSql)
 	result, err := o.Raw(sql, values).Exec()
 	if err != nil {
 		return 0, i18n.WrapDatabaseError(err)
@@ -220,16 +220,16 @@ func (t *Table) NewOrUpdateRecord(data map[string]interface{}, multiOrm ...orm.O
 	return NewOrUpdateRecord(t.DbName, t.TableName, data, multiOrm...)
 }
 
-func (t *Table) NewOrUpdateAndAddRecord(addData map[string]interface{}, upData map[string]interface{}, multiOrm ...orm.Ormer) (int64, error) {
-	return NewOrUpdateAndAddRecord(t.DbName, t.TableName, addData, upData, multiOrm...)
+func (t *Table) NewOrUpdateByAddRecord(addData map[string]interface{}, upData map[string]interface{}, multiOrm ...orm.Ormer) (int64, error) {
+	return NewOrUpdateByAddRecord(t.DbName, t.TableName, addData, upData, multiOrm...)
 }
 
 func (t *Table) UpdateTableRecord(data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
 	return UpdateTableRecord(t.DbName, t.TableName, data, conditionSql, multiOrm...)
 }
 
-func (t *Table) UpdateAndAddTableRecord(data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
-	return UpdateAndAddTableRecord(t.DbName, t.TableName, data, conditionSql, multiOrm...)
+func (t *Table) UpdateByAddTableRecord(data map[string]interface{}, conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
+	return UpdateByAddTableRecord(t.DbName, t.TableName, data, conditionSql, multiOrm...)
 }
 
 func (t *Table) DeleteTableRecord(conditionSql string, multiOrm ...orm.Ormer) (int64, error) {
