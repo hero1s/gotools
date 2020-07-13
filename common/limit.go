@@ -106,20 +106,4 @@ func GetFormatKey(key string, value interface{}) string {
 	return fmt.Sprintf("%v:%v", key, value)
 }
 
-//多少秒内限制多少次
-func TimeLimit(uid uint64, key string, s time.Duration, isGobal bool) bool {
-	key = GetFormatKey(key, uid)
-	if isGobal {
-		re := cache.Redis.Exists(key)
-		if re.Val() > 0 {
-			return false
-		}
-		cache.Redis.Set(key, "1", time.Second*s)
-	} else {
-		if cache.MemCache.IsExist(key) {
-			return false
-		}
-		cache.MemCache.Put(key, "1", time.Second*s)
-	}
-	return true
-}
+
