@@ -2,6 +2,8 @@ package login
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/hero1s/gotools/log"
@@ -52,6 +54,10 @@ func AliGetMobile(accessToken string) (string, error) {
 	if err != nil {
 		log.Error("解析返回失败:%v", err)
 		return "", err
+	}
+	if rep.Code != "OK" {
+		log.Error("阿里手机登录错误:%+v", rep)
+		return "", errors.New(fmt.Sprintf("阿里手机登录异常:%v", rep.Message))
 	}
 	log.Debug("返回结果:%#v", rep)
 	return rep.PhoneInfo.Mobile, nil
