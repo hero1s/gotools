@@ -42,7 +42,17 @@ type ScanResp struct {
 }
 
 //鉴定图片
-func CheckImageScan(imageUrl string) bool {
+
+/*porn：图片智能鉴黄
+terrorism：图片暴恐涉政识别
+ad：图文违规识别
+qrcode：图片二维码识别
+live：图片不良场景识别
+logo：图片logo识别
+[]string{"porn","terrorism","ad","live","qrcode","logo"}
+*/
+
+func CheckImageScan(imageUrl string,scenes []string) bool {
 	profile := greensdksample.Profile{AccessKeyId: accessKeyId, AccessKeySecret: accessKeySecret}
 
 	path := "/green/image/scan"
@@ -51,11 +61,8 @@ func CheckImageScan(imageUrl string) bool {
 		return true
 	}
 	clientInfo := greensdksample.ClinetInfo{Ip: "127.0.0.1"}
-
 	// 构造请求数据
 	bizType := "Green"
-	scenes := []string{"porn"}
-
 	task := greensdksample.Task{DataId: uuid.Rand().Hex(), Url: imageUrl}
 	tasks := []greensdksample.Task{task}
 
@@ -74,7 +81,7 @@ func CheckImageScan(imageUrl string) bool {
 		for _, d := range resp.Data {
 			for _, res := range d.Results {
 				if res.Suggestion == "block" {
-					log.Error("鉴定为屏蔽:%v", d.Url)
+					log.Error("鉴定为屏蔽:%v,场景:%v", d.Url,res.Scene)
 					return false
 				}
 				if res.Rate > 80 && res.Label == "porn" {
