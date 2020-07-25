@@ -134,6 +134,28 @@ func (c *WeChatPayClient) Refund(orderId string, moneyFee int64, tradeType strin
 }
 
 // 查询退款：client.QueryRefund()
+func (c *WeChatPayClient) QueryRefund(outTradeNo string, tradeType string)bool  {
+	//初始化参数结构体
+	body := make(gopay.BodyMap)
+	body.Set("out_trade_no", outTradeNo)
+	//body.Set("out_refund_no", "vk4264I1UQ3Hm3E4AKsavK8npylGSgQA092f9ckUxp8A2gXmnsLEdsupURVTcaC7")
+	//body.Set("transaction_id", "97HiM5j6kGmM2fk7fYMc8MgKhPnEQ5Rk")
+	//body.Set("refund_id", "97HiM5j6kGmM2fk7fYMc8MgKhPnEQ5Rk")
+	body.Set("nonce_str", gopay.GetRandomString(32))
+	body.Set("sign_type", gopay.SignType_MD5)
+
+	wxRsp, err := c.getPayClient(tradeType).QueryRefund(body)
+	if err != nil {
+		log.Error("查询微信退款错误:%v", err)
+		return false
+	}
+	if wxRsp.ReturnCode == "SUCCESS" && wxRsp.RefundStatus0 == "SUCCESS"{
+		return true
+	}
+	log.Error("查询微信退款返回:%+v", *wxRsp)
+	return false
+}
+
 
 // 下载对账单：client.DownloadBill()
 

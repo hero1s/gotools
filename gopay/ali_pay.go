@@ -25,7 +25,7 @@ func InitAliPay(isProd bool, payCfg AliPayParam) *AliPayClient {
 }
 
 //* 手机网站支付接口2.0（手机网站支付）：client.AliPayTradeWapPay()
-func (c *AliPayClient)AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl, returnUrl string) (string, error) {
+func (c *AliPayClient) AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl, returnUrl string) (string, error) {
 	if len(returnUrl) > 1 {
 		c.PayClient.SetReturnUrl(returnUrl)
 	}
@@ -46,7 +46,7 @@ func (c *AliPayClient)AliPayTradeWapPay(moneyFee int64, describe, orderId, quitU
 }
 
 //* 统一收单下单并支付页面接口（电脑网站支付）：client.AliPayTradePagePay()
-func (c *AliPayClient)AliPayTradePagePay(moneyFee int64, describe, orderId string, returnUrl string) (string, error) {
+func (c *AliPayClient) AliPayTradePagePay(moneyFee int64, describe, orderId string, returnUrl string) (string, error) {
 	if len(returnUrl) > 1 {
 		c.PayClient.SetReturnUrl(returnUrl)
 	}
@@ -67,7 +67,7 @@ func (c *AliPayClient)AliPayTradePagePay(moneyFee int64, describe, orderId strin
 }
 
 //* APP支付接口2.0（APP支付）：client.AliPayTradeAppPay()
-func (c *AliPayClient)AliPayTradeAppPay(moneyFee int64, describe, orderId string) (string, error) {
+func (c *AliPayClient) AliPayTradeAppPay(moneyFee int64, describe, orderId string) (string, error) {
 	//请求参数
 	body := make(gopay.BodyMap)
 	body.Set("subject", describe)
@@ -94,7 +94,7 @@ func (c *AliPayClient)AliPayTradeAppPay(moneyFee int64, describe, orderId string
 //* 统一收单交易撤销接口：client.AliPayTradeCancel()
 
 //* 统一收单交易退款接口：client.AliPayTradeRefund()
-func (c *AliPayClient)AliPayTradeRefund(orderId string, moneyFee int64) bool {
+func (c *AliPayClient) AliPayTradeRefund(orderId string, moneyFee int64) bool {
 	//请求参数
 	body := make(gopay.BodyMap)
 	body.Set("out_trade_no", orderId)
@@ -119,13 +119,30 @@ func (c *AliPayClient)AliPayTradeRefund(orderId string, moneyFee int64) bool {
 //* 统一收单退款页面接口：client.AliPayTradePageRefund()
 
 //* 统一收单交易退款查询：client.AliPayTradeFastPayRefundQuery()
+func (c *AliPayClient) AliPayTradeFastPayRefundQuery(outTradeNo string) string {
+	//请求参数
+	body := make(gopay.BodyMap)
+	body.Set("out_trade_no", outTradeNo)
+	body.Set("out_request_no", outTradeNo)
+	//发起退款查询请求
+	aliRsp, err := c.PayClient.AliPayTradeFastPayRefundQuery(body)
+	if err != nil {
+		log.Error("支付宝退款查询错误:%v", err)
+		return "0"
+	}
+	if aliRsp.AliPayTradeFastpayRefundQueryResponse.Code != "10000" {
+		log.Error("阿里退款查询返回:%+v", *aliRsp)
+		return "0"
+	}
+	return aliRsp.AliPayTradeFastpayRefundQueryResponse.RefundAmount
+}
 
 //* 统一收单交易结算接口：client.AliPayTradeOrderSettle()
 
 //* 统一收单线下交易预创建（用户扫商品收款码）：client.AliPayTradePrecreate()
 
 //* 单笔转账到支付宝账户接口（商户给支付宝用户转账）：client.AlipayFundTransToaccountTransfer()
-func (c *AliPayClient)AlipayFundTransToaccountTransfer(account string, moneyFee int64, desc string) {
+func (c *AliPayClient) AlipayFundTransToaccountTransfer(account string, moneyFee int64, desc string) {
 	body := make(gopay.BodyMap)
 	out_biz_no := gopay.GetRandomString(32)
 	body.Set("out_biz_no", out_biz_no)
@@ -158,6 +175,6 @@ func (c *AliPayClient)AlipayFundTransToaccountTransfer(account string, moneyFee 
 //* 获取芝麻信用分：client.ZhimaCreditScoreGet()
 
 //验证支付宝回调
-func (c *AliPayClient)VerifyAliPaySign(notifyReq *gopay.AliPayNotifyRequest) (ok bool, err error) {
+func (c *AliPayClient) VerifyAliPaySign(notifyReq *gopay.AliPayNotifyRequest) (ok bool, err error) {
 	return gopay.VerifyAliPaySign(string(keyFromFile(c.PayCfg.AliPayPublicKeyFile)), notifyReq)
 }
