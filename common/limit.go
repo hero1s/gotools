@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/hero1s/gotools/cache"
 	"github.com/hero1s/gotools/log"
-	"strconv"
 	"time"
 )
 
@@ -35,9 +34,14 @@ func AccessLimit(key string, frequency int64, expireTime int64, isGobal bool) bo
 			return true
 		}
 		f := cache.RedisCache.GetInt64(key)
-		if f < frequency { // 内存模式不会修改过期时间
-			f += 1
-			cache.Redis.SetRange(key,0,strconv.FormatInt(f,10))
+		if f < frequency { // redis模式或修改过期时间
+			cache.RedisCache.Incr(key)
+			ret := cache.Redis.TTL(key)
+			if ret.Val() > 0 {
+				cache.RedisCache.Expire(key, time.Duration(expireTime)*time.Second-ret.Val())
+			}else{
+				cache.RedisCache.Expire(key, time.Duration(expireTime)*time.Second)
+			}
 			return true
 		}
 		log.Info(fmt.Sprintf("触及全局访问限速,key:%v,frequency:%v,expireTime:%v", key, frequency, expireTime))
@@ -107,5 +111,3 @@ func CheckErrorLock(key string, isRight bool, limitCount, lockHour int64) bool {
 func GetFormatKey(key string, value interface{}) string {
 	return fmt.Sprintf("%v:%v", key, value)
 }
-
-
