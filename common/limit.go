@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hero1s/gotools/cache"
 	"github.com/hero1s/gotools/log"
+	"strconv"
 	"time"
 )
 
@@ -35,7 +36,8 @@ func AccessLimit(key string, frequency int64, expireTime int64, isGobal bool) bo
 		}
 		f := cache.RedisCache.GetInt64(key)
 		if f < frequency { // 内存模式不会修改过期时间
-			cache.RedisCache.Incr(key)
+			f += 1
+			cache.Redis.SetRange(key,0,strconv.FormatInt(f,10))
 			return true
 		}
 		log.Info(fmt.Sprintf("触及全局访问限速,key:%v,frequency:%v,expireTime:%v", key, frequency, expireTime))
