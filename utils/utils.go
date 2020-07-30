@@ -242,8 +242,10 @@ func SafeCallFunc(f func()) {
 
 // 获取正在运行的函数名
 func RunFuncName() string {
-	pc := make([]uintptr, 1)
-	runtime.Callers(2, pc)
-	f := runtime.FuncForPC(pc[0])
-	return f.Name()
+	pc, _, _, _ := runtime.Caller(1)
+	return runtime.FuncForPC(pc).Name()
+}
+func CallerFuncName() string {
+	pc, _, _, _ := runtime.Caller(2)
+	return runtime.FuncForPC(pc).Name()
 }
