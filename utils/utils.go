@@ -7,6 +7,7 @@ import (
 	"github.com/hero1s/gotools/log"
 	"math/rand"
 	"net"
+	"runtime"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -215,7 +216,6 @@ func RemoveRepeatedElement(slc []uint64) []uint64 {
 	return result
 }
 
-
 //安全执行异步函数
 func SafeGoroutine(f func()) {
 	go func() {
@@ -238,4 +238,12 @@ func SafeCallFunc(f func()) {
 		}
 	}()
 	f()
+}
+
+// 获取正在运行的函数名
+func RunFuncName() string {
+	pc := make([]uintptr, 1)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	return f.Name()
 }
