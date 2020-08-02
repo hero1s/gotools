@@ -68,13 +68,14 @@ func (c *AliPayClient) AliPayTradePagePay(moneyFee int64, describe, orderId stri
 }
 
 //* APP支付接口2.0（APP支付）：client.AliPayTradeAppPay()
-func (c *AliPayClient) AliPayTradeAppPay(moneyFee int64, describe, orderId string) (string, error) {
+func (c *AliPayClient) AliPayTradeAppPay(moneyFee int64, describe, orderId string,timeout string) (string, error) {
 	//请求参数
 	body := make(gopay.BodyMap)
 	body.Set("subject", describe)
 	body.Set("out_trade_no", orderId)
 	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
 	body.Set("product_code", c.PayCfg.AliProductCode)
+	body.Set("timeout_express",timeout)
 	//手机APP支付参数请求
 	payParam, err := c.PayClient.AliPayTradeAppPay(body)
 	if err != nil {
