@@ -2,7 +2,9 @@ package gopay
 
 import (
 	"github.com/hero1s/gotools/log"
+	"github.com/hero1s/gotools/utils"
 	"github.com/iGoogle-ink/gopay"
+	"time"
 )
 
 type AliPayClient struct {
@@ -25,7 +27,7 @@ func InitAliPay(isProd bool, payCfg AliPayParam) *AliPayClient {
 }
 
 //* 手机网站支付接口2.0（手机网站支付）：client.AliPayTradeWapPay()
-func (c *AliPayClient) AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl, returnUrl string,timeout string) (string, error) {
+func (c *AliPayClient) AliPayTradeWapPay(moneyFee int64, describe, orderId, quitUrl, returnUrl string,timeout int64) (string, error) {
 	if len(returnUrl) > 1 {
 		c.PayClient.SetReturnUrl(returnUrl)
 	}
@@ -36,7 +38,7 @@ func (c *AliPayClient) AliPayTradeWapPay(moneyFee int64, describe, orderId, quit
 	body.Set("quit_url", quitUrl)
 	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
 	body.Set("product_code", "QUICK_WAP_WAY")
-	body.Set("timeout_express",timeout)
+	body.Set("time_expire",time.Unix(timeout,0).Format(utils.TimeTemplateSecond))
 	//手机网站支付请求
 	payUrl, err := c.PayClient.AliPayTradeWapPay(body)
 	if err != nil {
@@ -47,7 +49,7 @@ func (c *AliPayClient) AliPayTradeWapPay(moneyFee int64, describe, orderId, quit
 }
 
 //* 统一收单下单并支付页面接口（电脑网站支付）：client.AliPayTradePagePay()
-func (c *AliPayClient) AliPayTradePagePay(moneyFee int64, describe, orderId string, returnUrl string,timeout string) (string, error) {
+func (c *AliPayClient) AliPayTradePagePay(moneyFee int64, describe, orderId string, returnUrl string,timeout int64) (string, error) {
 	if len(returnUrl) > 1 {
 		c.PayClient.SetReturnUrl(returnUrl)
 	}
@@ -57,7 +59,7 @@ func (c *AliPayClient) AliPayTradePagePay(moneyFee int64, describe, orderId stri
 	body.Set("out_trade_no", orderId)
 	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
 	body.Set("product_code", "FAST_INSTANT_TRADE_PAY")
-	body.Set("timeout_express",timeout)
+	body.Set("time_expire",time.Unix(timeout,0).Format(utils.TimeTemplateSecond))
 	//电脑网站支付请求
 	payUrl, err := c.PayClient.AliPayTradePagePay(body)
 	if err != nil {
