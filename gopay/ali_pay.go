@@ -36,6 +36,7 @@ func (c *AliPayClient) AliPayTradeWapPay(moneyFee int64, describe, orderId, quit
 	body.Set("quit_url", quitUrl)
 	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
 	body.Set("product_code", "QUICK_WAP_WAY")
+	body.Set("timeout_express","5m")
 	//手机网站支付请求
 	payUrl, err := c.PayClient.AliPayTradeWapPay(body)
 	if err != nil {
@@ -56,7 +57,7 @@ func (c *AliPayClient) AliPayTradePagePay(moneyFee int64, describe, orderId stri
 	body.Set("out_trade_no", orderId)
 	body.Set("total_amount", AliMoneyFeeToString(float64(moneyFee)))
 	body.Set("product_code", "FAST_INSTANT_TRADE_PAY")
-
+	body.Set("timeout_express","5m")
 	//电脑网站支付请求
 	payUrl, err := c.PayClient.AliPayTradePagePay(body)
 	if err != nil {
