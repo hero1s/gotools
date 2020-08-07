@@ -18,7 +18,7 @@ func TryLock(lockName string, ttl,waitTime time.Duration) (*redislock.Lock, erro
 	}
 	lock, err := locker.Obtain(lockName, ttl, &opt)
 	if err == redislock.ErrNotObtained {
-		log.Error("Could not obtain lock!")
+		log.Error("Could not obtain lock! lockerName:%v",lockName)
 	} else if err != nil {
 		log.Error(err.Error())
 	}
