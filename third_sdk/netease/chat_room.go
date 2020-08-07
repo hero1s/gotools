@@ -419,12 +419,22 @@ func (b *Net) SendMsgChatRoom(pm map[string]interface{}) error  {
 	var r SendMsgType
 	err = json.Unmarshal(rsp, &r)
 	if err != nil {
+		log.Error("发送聊天室消息,post返回%v",string(rsp[:]))
 		return err
 	}
 	if r.Code != 200 {
-		log.Error("发送聊天室消息,返回:%#v",r)
+		log.Error("发送聊天室消息,返回码:%#v,返回:%v",r,string(rsp[:]))
 		return err
 	}
+	/*
+	str,_ := json.Marshal(pm)
+	db_data := map[string]interface{}{
+		"roomid":pm["roomid"],
+		"content":string(str[:]),
+		"ptime":time.Now().Unix(),
+		"msgid":pm["msgId"],
+	}
+	db_table.TSendChatLog.NewTableRecord(db_data)*/
 	return nil
 }
 
@@ -480,7 +490,7 @@ func (b *Net) SetMemberRole(roomid uint64,operator string,target string,opt int6
 		return err
 	}
 	if r.Code != 200 {
-		log.Error("修改聊天室开/关闭状态,返回:%#v",r)
+		log.Error("设置聊天室成员,返回码:%#v,返回值:%v",r,string(rsp[:]))
 		return errors.New(string(rsp[:]))
 	}
 	return nil
@@ -718,6 +728,27 @@ func (b *Net)QueuePoll(roomid uint64,key string) error {
 		return errors.New(fmt.Sprintf("删除聊天室队列元素,返回:%#v",r))
 	}
 	return nil
+}
+
+//list聊天室队列
+func (b *Net)QueueList(roomid uint64) QueueListType {
+	var r QueueListType
+	url := "https://api.netease.im/nimserver/chatroom/queueList.action"
+	rsp, err := b.postDataHttps(url, map[string]interface{}{"roomid":roomid})
+	log.Error("排序列出队列中所有元素,post返回%v",string(rsp[:]))
+	if err != nil {
+		return r
+	}
+
+	err = json.Unmarshal(rsp, &r)
+	if err != nil {
+		return r
+	}
+	if r.Code != 200 {
+		log.Error("list聊天室队列元素,返回:%#v",r)
+		return r
+	}
+	return r
 }
 //更新聊天室信息
 func (b *Net) UpdateChatRoom(roomid uint64,pm map[string]interface{}) error  {

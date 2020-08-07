@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/hero1s/gotools/log"
 )
 
 var (
@@ -240,6 +241,12 @@ type SendMsg struct {
 type OnlyCode struct {
 	Code int64 `json:"code"`
 }
+type QueueListType struct {
+	Code int64 `json:"code"`
+	Desc struct{
+		List []map[string]string `json:"list"`
+	}`json:"desc"`
+}
 type BroadcastMsg struct {
 	Code int64 `json:"code"`
 	Msg struct {
@@ -265,7 +272,7 @@ func handleOnlyCodeResponse(rsp []byte, err error) error {
 		return err
 	}
 	if r.Code != 200 {
-		fmt.Println("---------IM error msg:", r.Desc)
+		log.Error("---------IM error msg:", r.Desc)
 		return errors.New(fmt.Sprintf("%v", r.Code))
 	}
 	return nil
