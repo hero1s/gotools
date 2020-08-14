@@ -8,6 +8,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"github.com/pkg/errors"
@@ -72,4 +73,26 @@ func Md5WithRsa(params string, privateKey []byte) (string, error) {
 	signature, err := rsa.SignPKCS1v15(rand.Reader, p, crypto.MD5, hashed)
 
 	return base64.StdEncoding.EncodeToString(signature), err
+}
+
+//发送钉钉消息
+func SendMsgToDingDing(msg string, tokenUrl string) {
+	headers := http.Header{}
+	headers.Add("Content-Type", "application/json;charset=utf-8")
+	type Msg struct {
+		Content string `json:"content"`
+	}
+	var m Msg
+	m.Content = msg
+	data := map[string]interface{}{
+		"msgtype": "text",
+		"text":    m,
+	}
+	buff, _ := json.Marshal(data)
+	HttpsRequest(Request{
+		Method: "POST",
+		URL:    tokenUrl,
+		Header: headers,
+		Body:   string(buff),
+	})
 }
