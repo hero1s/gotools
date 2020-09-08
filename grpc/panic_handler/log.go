@@ -19,13 +19,13 @@ func LogPanicStackMultiLine(r interface{}) {
 		if !ok {
 			break
 		}
-		callers = append(callers, fmt.Sprintf("%d: %v:%v\n", i, file, line))
+		callers = append(callers, fmt.Sprintf("%d: %v:%v", i, file, line))
 	}
 	if len(callers) > 0 {
 		log.Error("Recovered from panic: %#v (%v) in %s", r, r, callers[0])
 	}
 	log.Warning("StackTrace:")
 	for i := 0; len(callers) > i; i++ {
-		log.Warning("  %s", callers[i])
+		log.Error("  %s", callers[i])
 	}
 }
