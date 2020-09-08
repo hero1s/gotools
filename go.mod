@@ -33,6 +33,6 @@ require (
 	xorm.io/xorm v1.0.3
 )
 
-replace github.com/astaxie/beego v1.12.0 => github.com/nicle-lin/beego v1.12.7
+replace github.com/astaxie/beego v1.12.1 => github.com/nicle-lin/beego v1.12.7
 
 replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3
