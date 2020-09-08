@@ -1,4 +1,4 @@
-package grpc_pool
+package pool
 
 import (
 	"context"

@@ -25,6 +25,7 @@ require (
 	github.com/shopspring/decimal v0.0.0-20191130220710-360f2bc03045
 	github.com/stretchr/testify v1.4.0
 	github.com/zheng-ji/goSnowFlake v0.0.0-20180906112711-fc763800eec9
+	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/grpc v1.31.0
 	gopkg.in/fatih/set.v0 v0.2.1
