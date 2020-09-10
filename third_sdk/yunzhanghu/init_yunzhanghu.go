@@ -3,7 +3,7 @@ package yunzhanghu
 import (
 	"github.com/hero1s/gotools/gopay"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/yunzhanghu/sdk"
+	sdk2 "github.com/hero1s/gotools/third_sdk/yunzhanghu/sdk"
 )
 
 // 接口配置信息
@@ -16,18 +16,18 @@ var (
 	NotifyURL = ""
 )
 
-var YunZhangHuClient *sdk.Client
+var YunZhangHuClient *sdk2.Client
 
 func InitYunZhangHu() {
 	// 初始化SDK客户端
 	log.Info("初始化云账户客户端:%v \n %v \n %v \n %v \n %v \n %v \n", BrokerID, DealerID, AppKey, Des3Key, Gateway,NotifyURL)
-	YunZhangHuClient = sdk.New(BrokerID, DealerID, Gateway, AppKey, Des3Key)
+	YunZhangHuClient = sdk2.New(BrokerID, DealerID, Gateway, AppKey, Des3Key)
 }
 
 // 1、银行卡下单,响应云账户综合服务平台订单流水号
 func CreateBankOrder(cardNo, orderId, realName, idCard string, moneyFee int64, remark, phone string) error {
 	// 1、银行卡下单,响应云账户综合服务平台订单流水号
-	bankOrderParam := &sdk.BankOrderParam{
+	bankOrderParam := &sdk2.BankOrderParam{
 		CardNo:  cardNo,
 		PhoneNo: phone,
 	}

@@ -229,7 +229,7 @@ func SafeGoroutine(f func()) {
 	}()
 }
 
-//安全执行异步函数
+//安全执行函数
 func SafeCallFunc(f func()) {
 	defer func() {
 		if r := recover(); r != nil {
