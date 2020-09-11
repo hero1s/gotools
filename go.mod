@@ -27,6 +27,7 @@ require (
 	github.com/zheng-ji/goSnowFlake v0.0.0-20180906112711-fc763800eec9
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	google.golang.org/api v0.13.0
 	google.golang.org/grpc v1.31.0
 	gopkg.in/fatih/set.v0 v0.2.1
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
