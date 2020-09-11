@@ -81,11 +81,11 @@ func CheckImageScan(imageUrl string,scenes []string) bool {
 		for _, d := range resp.Data {
 			for _, res := range d.Results {
 				if res.Suggestion == "block" {
-					log.Error("鉴定为屏蔽:%v,场景:%v", d.Url,res.Scene)
+					log.Error("鉴定为屏蔽:%v,场景:%+v", d.Url,res.Scene)
 					return false
 				}
 				if res.Rate > 80 && res.Label == "porn" {
-					log.Error("鉴定涉黄分数:%v", res)
+					log.Error("鉴定场景分数:%+v", res)
 					return false
 				}
 			}
