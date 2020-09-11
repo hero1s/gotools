@@ -17,11 +17,12 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.3.3
 	github.com/gorilla/websocket v1.4.2
-	github.com/hero1s/ginweb v0.0.0-20200613021022-1d21484b414f
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/iGoogle-ink/gopay v1.3.9
 	github.com/oschwald/geoip2-golang v1.4.0
 	github.com/pkg/errors v0.8.1
+	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/shopspring/decimal v0.0.0-20191130220710-360f2bc03045
 	github.com/stretchr/testify v1.4.0
 	github.com/zheng-ji/goSnowFlake v0.0.0-20180906112711-fc763800eec9
@@ -37,3 +38,5 @@ require (
 replace github.com/astaxie/beego v1.12.1 => github.com/nicle-lin/beego v1.12.8
 
 replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3
+
+replace google.golang.org/grpc => google.golang.org/grpc v1.26.0

@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/hero1s/ginweb/pkg/log"
+	"github.com/hero1s/gotools/log"
 	"regexp"
 )
 
