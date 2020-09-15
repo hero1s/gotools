@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.60.317
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.4+incompatible
-	github.com/astaxie/beego v1.12.1
+	github.com/astaxie/beego v1.12.2
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/bsm/redislock v0.5.0
 	github.com/denverdino/aliyungo v0.0.0-20191128015008-acd8035bbb1d
@@ -35,7 +35,7 @@ require (
 	xorm.io/xorm v1.0.3
 )
 
-replace github.com/astaxie/beego v1.12.2 => github.com/nicle-lin/beego v1.12.3
+replace github.com/astaxie/beego v1.12.2 => github.com/nicle-lin/beego v1.12.21
 
 replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3
 
