@@ -15,7 +15,7 @@ require (
 	github.com/garyburd/redigo v1.6.0
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/golang/protobuf v1.3.3
+	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/websocket v1.4.2
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/iGoogle-ink/gopay v1.3.9
@@ -35,7 +35,7 @@ require (
 	xorm.io/xorm v1.0.3
 )
 
-replace github.com/astaxie/beego v1.12.1 => github.com/nicle-lin/beego v1.12.8
+replace github.com/astaxie/beego v1.12.2 => github.com/nicle-lin/beego v1.12.3
 
 replace github.com/iGoogle-ink/gopay v1.3.9 => github.com/hero1s/gopay v1.4.3
 
