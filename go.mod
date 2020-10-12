@@ -13,21 +13,24 @@ require (
 	github.com/gansidui/geohash v0.0.0-20141019080235-ebe5ba447f34
 	github.com/gansidui/nearest v0.0.0-20141019122829-a5d0cde6ef14
 	github.com/garyburd/redigo v1.6.0
+	github.com/gin-gonic/gin v1.6.3
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/websocket v1.4.2
 	github.com/howeyc/fsnotify v0.9.0
 	github.com/iGoogle-ink/gopay v1.3.9
+	github.com/iGoogle-ink/gotil v1.0.7
 	github.com/oschwald/geoip2-golang v1.4.0
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/shopspring/decimal v0.0.0-20191130220710-360f2bc03045
-	github.com/stretchr/testify v1.4.0
+	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
+	github.com/stretchr/testify v1.6.1
 	github.com/zheng-ji/goSnowFlake v0.0.0-20180906112711-fc763800eec9
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	golang.org/x/net v0.0.0-20200707034311-ab3426394381
+	golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e
 	google.golang.org/api v0.13.0
 	google.golang.org/grpc v1.31.0
 	gopkg.in/fatih/set.v0 v0.2.1
