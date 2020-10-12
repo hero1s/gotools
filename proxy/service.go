@@ -3,6 +3,7 @@ package proxy
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -18,21 +19,20 @@ type Service struct {
 	httpCli *http.Client
 	Schema  SchemaType // SchemaHTTP or SchemaHTTPS
 	r       *http.Request
-	Host    string
-	Port    string
+	Host    map[string]string
 	Key     string
 	log     *log.Logger
 }
 
-func New(c *Config) {
+func NewHandler(c *Config) (handler *ProxyHandler) {
 	srv = &Service{
 		httpCli: new(http.Client),
 		Schema:  c.ProxySchema,
 		Host:    c.ProxyHost,
-		Port:    c.ProxyPort,
 		Key:     c.Key,
-		log:     log.New(os.Stdout, "[PROXY] ", log.Lmsgprefix),
+		log:     log.New(os.Stdout, "[PROXY] ", log.Lmicroseconds),
 	}
+	return &ProxyHandler{c: c}
 }
 
 // Proxy
@@ -55,7 +55,13 @@ func (s *Service) Proxy(c context.Context, w http.ResponseWriter, r *http.Reques
 		io.WriteString(w, fmt.Sprintf("[%s] invalid key", key))
 		return
 	}
-	uri := fmt.Sprintf("%s", s.Schema) + s.Host + s.Port + rUri
+	host, err := s.findProxyHost(rUri)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, fmt.Sprintf("[%s]", err.Error()))
+		return
+	}
+	uri := fmt.Sprintf("%s", s.Schema) + host + rUri
 	// Request
 	m := strings.ToUpper(r.Method)
 	ct := rHeader.Get(HEADER_CONTENT_TYPE)
@@ -145,4 +151,12 @@ func (s *Service) clientIP() string {
 	}
 
 	return ""
+}
+func (s *Service) findProxyHost(rUri string) (string, error) {
+	for k, v := range s.Host {
+		if strings.HasPrefix(rUri, k) {
+			return v, nil
+		}
+	}
+	return "", errors.New("路由未查找到")
 }
