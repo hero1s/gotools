@@ -7,10 +7,9 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"
+	uuid2 "github.com/hero1s/gotools/third_sdk/alisdk/green/uuid"
 	"net/http"
 	"time"
-
-	"github.com/hero1s/gotools/alisdk/green/uuid"
 )
 
 const host string = "http://green.cn-shanghai.aliyuncs.com"
@@ -27,7 +26,7 @@ func addRequestHeader(requestBody string, req *http.Request, clientInfo string, 
 	base64Md5Str := base64.StdEncoding.EncodeToString(cipherStr)
 
 	acsHeaderKeyArray := []string{"x-acs-signature-method", "x-acs-signature-nonce", "x-acs-signature-version", "x-acs-version"}
-	acsHeaderValueArray := []string{"HMAC-SHA1", uuid.Rand().Hex(), "1.0", "2017-01-12"}
+	acsHeaderValueArray := []string{"HMAC-SHA1", uuid2.Rand().Hex(), "1.0", "2017-01-12"}
 
 	req.Header.Set("Accept", MIME)
 	req.Header.Set("Content-Type", MIME)

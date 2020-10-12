@@ -2,7 +2,7 @@ package yunzhanghu
 
 import (
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/pay/gopay"
+	"github.com/hero1s/gotools/third_sdk/pay/gopay"
 	sdk2 "github.com/hero1s/gotools/third_sdk/yunzhanghu/sdk"
 )
 

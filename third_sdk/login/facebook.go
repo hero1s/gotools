@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/hero1s/gotools/login/fetch"
+	fetch2 "github.com/hero1s/gotools/third_sdk/login/fetch"
 )
 // 这是应该web端facebook登录的，至于客户端的如何还不知道，没研究
 
@@ -59,7 +59,7 @@ type FacebookData struct {
 
 func VerifyFacebookToken(inputToken string) (FacebookData, error) {
 	api := fmt.Sprintf(facebookAuth, inputToken, faceBookAppId, facebookAppSecret)
-	data, err := fetch.Cmd(fetch.Request{
+	data, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    api,
 		Body:   nil,

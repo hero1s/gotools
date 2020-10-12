@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/login/fetch"
+	fetch2 "github.com/hero1s/gotools/third_sdk/login/fetch"
 	"github.com/hero1s/gotools/utils"
 	"strings"
 )
@@ -54,7 +54,7 @@ func NewQQAuth(AppID, AppSecret string) *QQAuth {
 func (oAuth *QQAuth) GetQQAccessToken(code string, redirectUrl string) (string, error) {
 	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%v&client_secret=%v&code=%v&redirect_uri=%v`,
 		oAuth.QQAppID, oAuth.QQAppSecret, code, redirectUrl)
-	body, err := fetch.Cmd(fetch.Request{
+	body, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    url,
 	})
@@ -85,7 +85,7 @@ type QQOpenIdRep struct {
 func (oAuth *QQAuth) GetQQOpenId(accessToken string) (QQOpenIdRep, error) {
 	url := fmt.Sprintf(`https://graph.qq.com/oauth2.0/me?access_token=%v&unionid=1`,
 		accessToken)
-	body, err := fetch.Cmd(fetch.Request{
+	body, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    url,
 	})
@@ -119,7 +119,7 @@ func (oAuth *QQAuth) GetQQUserInfo(accessToken, openID string) (*QQ, error) {
 		oAuth.QQAppID,
 		openID,
 	)
-	body, err := fetch.Cmd(fetch.Request{
+	body, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    url,
 	})

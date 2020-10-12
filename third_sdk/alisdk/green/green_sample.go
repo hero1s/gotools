@@ -2,9 +2,9 @@ package green_sdk
 
 import (
 	"encoding/json"
-	"github.com/hero1s/gotools/alisdk/green/greensdksample"
-	"github.com/hero1s/gotools/alisdk/green/uuid"
 	"github.com/hero1s/gotools/log"
+	greensdksample2 "github.com/hero1s/gotools/third_sdk/alisdk/green/greensdksample"
+	uuid2 "github.com/hero1s/gotools/third_sdk/alisdk/green/uuid"
 	"path"
 	"regexp"
 )
@@ -53,22 +53,22 @@ logo：图片logo识别
 */
 
 func CheckImageScan(imageUrl string,scenes []string) bool {
-	profile := greensdksample.Profile{AccessKeyId: accessKeyId, AccessKeySecret: accessKeySecret}
+	profile := greensdksample2.Profile{AccessKeyId: accessKeyId, AccessKeySecret: accessKeySecret}
 
 	path := "/green/image/scan"
 	//是否视频
 	if CheckFileNameIsVideo(imageUrl) { //视频文件后台自动冻结
 		return true
 	}
-	clientInfo := greensdksample.ClinetInfo{Ip: "127.0.0.1"}
+	clientInfo := greensdksample2.ClinetInfo{Ip: "127.0.0.1"}
 	// 构造请求数据
 	bizType := "Green"
-	task := greensdksample.Task{DataId: uuid.Rand().Hex(), Url: imageUrl}
-	tasks := []greensdksample.Task{task}
+	task := greensdksample2.Task{DataId: uuid2.Rand().Hex(), Url: imageUrl}
+	tasks := []greensdksample2.Task{task}
 
-	bizData := greensdksample.BizData{bizType, scenes, tasks}
+	bizData := greensdksample2.BizData{bizType, scenes, tasks}
 
-	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile: profile}
+	var client greensdksample2.IAliYunClient = greensdksample2.DefaultClient{Profile: profile}
 
 	// your biz code
 	strResp := client.GetResponse(path, clientInfo, bizData)
@@ -97,7 +97,7 @@ func CheckImageScan(imageUrl string,scenes []string) bool {
 
 //鉴定文本
 func CheckTextScan(text string) bool {
-	profile := greensdksample.Profile{AccessKeyId: accessKeyId, AccessKeySecret: accessKeySecret}
+	profile := greensdksample2.Profile{AccessKeyId: accessKeyId, AccessKeySecret: accessKeySecret}
 
 	pattern := "^[A-Za-z0-9]+$"
 	ok, _ := regexp.MatchString(pattern, text)
@@ -110,18 +110,18 @@ func CheckTextScan(text string) bool {
 	}
 
 	path := "/green/text/scan";
-	clientInfo := greensdksample.ClinetInfo{Ip: "127.0.0.1"}
+	clientInfo := greensdksample2.ClinetInfo{Ip: "127.0.0.1"}
 
 	// 构造请求数据
 	bizType := "Green"
 	scenes := []string{"antispam"}
 
-	task := greensdksample.Task{DataId: uuid.Rand().Hex(), Content: text}
-	tasks := []greensdksample.Task{task}
+	task := greensdksample2.Task{DataId: uuid2.Rand().Hex(), Content: text}
+	tasks := []greensdksample2.Task{task}
 
-	bizData := greensdksample.BizData{bizType, scenes, tasks}
+	bizData := greensdksample2.BizData{bizType, scenes, tasks}
 
-	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile: profile}
+	var client greensdksample2.IAliYunClient = greensdksample2.DefaultClient{Profile: profile}
 
 	// your biz code
 	strResp := client.GetResponse(path, clientInfo, bizData)

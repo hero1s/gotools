@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/hero1s/gotools/cache"
 	"github.com/hero1s/gotools/log"
-	"github.com/hero1s/gotools/login/fetch"
+	fetch2 "github.com/hero1s/gotools/third_sdk/login/fetch"
 	"io"
 	"math/rand"
 	"sort"
@@ -31,7 +31,7 @@ func GetWeChatUserInfo(accessToken, openID string) (*WeChatInfo, error) {
 		accessToken,
 		openID,
 	)
-	body, err := fetch.Cmd(fetch.Request{
+	body, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    url,
 	})
@@ -67,7 +67,7 @@ func NewWeChatAuth(AppID, AppSecret string) *WeChatAuth {
 func (oAuth *WeChatAuth)GetWeChatOpenIdAccessToken(code string, redirectUrl string) (*WeChatToken, error) {
 	url := fmt.Sprintf("https://api.weixin.qq.com/sns/oauth2/access_token?"+
 		"appid=%v&secret=%v&code=%v&grant_type=authorization_code&redirect_uri=%v", oAuth.WeChatAppID, oAuth.WeChatAppSecret, code,redirectUrl)
-	body, err := fetch.Cmd(fetch.Request{
+	body, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    url,
 	})
@@ -110,7 +110,7 @@ func (oAuth *WeChatAuth)getAccessToken() (string, error) {
 		url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
 			oAuth.WeChatAppID, oAuth.WeChatAppSecret)
 		var body []byte
-		body, err = fetch.Cmd(fetch.Request{
+		body, err = fetch2.Cmd(fetch2.Request{
 			Method: "GET",
 			URL:    url,
 		})
@@ -153,7 +153,7 @@ func (oAuth *WeChatAuth)getWeChatTicket(accessToken, uri string) (*WeChatSign, e
 	if val == "" { //doesn't exist
 		url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%v&type=jsapi", accessToken)
 		var body []byte
-		body, err = fetch.Cmd(fetch.Request{
+		body, err = fetch2.Cmd(fetch2.Request{
 			Method: "GET",
 			URL:    url,
 		})

@@ -3,7 +3,7 @@ package login
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hero1s/gotools/login/fetch"
+	fetch2 "github.com/hero1s/gotools/third_sdk/login/fetch"
 )
 
 var (
@@ -59,7 +59,7 @@ func GetWeiboUser(accessToken, uID string) (Weibo, error) {
 		accessToken,
 		uID,
 	)
-	body, err := fetch.Cmd(fetch.Request{
+	body, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    url,
 	})

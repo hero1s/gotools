@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/hero1s/gotools/login/fetch"
+	fetch2 "github.com/hero1s/gotools/third_sdk/login/fetch"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
 )
@@ -68,7 +68,7 @@ type GoogleData struct {
 func GoogleLogin(idToken string) (bool, GoogleData, error) {
 	api := fmt.Sprintf(googleAuth, idToken)
 	var goData GoogleData
-	data, err := fetch.Cmd(fetch.Request{
+	data, err := fetch2.Cmd(fetch2.Request{
 		Method: "GET",
 		URL:    api,
 		Body:   nil,
