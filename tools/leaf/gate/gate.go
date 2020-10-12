@@ -1,9 +1,9 @@
 package gate
 
 import (
-	"github.com/hero1s/gotools/leaf/chanrpc"
-	"github.com/hero1s/gotools/leaf/network"
 	"github.com/hero1s/gotools/log"
+	chanrpc2 "github.com/hero1s/gotools/tools/leaf/chanrpc"
+	network2 "github.com/hero1s/gotools/tools/leaf/network"
 	"net"
 	"reflect"
 	"time"
@@ -13,8 +13,8 @@ type Gate struct {
 	MaxConnNum      int
 	PendingWriteNum int
 	MaxMsgLen       uint32
-	Processor       network.Processor
-	AgentChanRPC    *chanrpc.Server
+	Processor       network2.Processor
+	AgentChanRPC    *chanrpc2.Server
 
 	// websocket
 	WSAddr      string
@@ -29,9 +29,9 @@ type Gate struct {
 }
 
 func (gate *Gate) Run(closeSig chan bool) {
-	var wsServer *network.WSServer
+	var wsServer *network2.WSServer
 	if gate.WSAddr != "" {
-		wsServer = new(network.WSServer)
+		wsServer = new(network2.WSServer)
 		wsServer.Addr = gate.WSAddr
 		wsServer.MaxConnNum = gate.MaxConnNum
 		wsServer.PendingWriteNum = gate.PendingWriteNum
@@ -39,7 +39,7 @@ func (gate *Gate) Run(closeSig chan bool) {
 		wsServer.HTTPTimeout = gate.HTTPTimeout
 		wsServer.CertFile = gate.CertFile
 		wsServer.KeyFile = gate.KeyFile
-		wsServer.NewAgent = func(conn *network.WSConn) network.Agent {
+		wsServer.NewAgent = func(conn *network2.WSConn) network2.Agent {
 			a := &agent{conn: conn, gate: gate}
 			if gate.AgentChanRPC != nil {
 				gate.AgentChanRPC.Go("NewAgent", a)
@@ -48,16 +48,16 @@ func (gate *Gate) Run(closeSig chan bool) {
 		}
 	}
 
-	var tcpServer *network.TCPServer
+	var tcpServer *network2.TCPServer
 	if gate.TCPAddr != "" {
-		tcpServer = new(network.TCPServer)
+		tcpServer = new(network2.TCPServer)
 		tcpServer.Addr = gate.TCPAddr
 		tcpServer.MaxConnNum = gate.MaxConnNum
 		tcpServer.PendingWriteNum = gate.PendingWriteNum
 		tcpServer.LenMsgLen = gate.LenMsgLen
 		tcpServer.MaxMsgLen = gate.MaxMsgLen
 		tcpServer.LittleEndian = gate.LittleEndian
-		tcpServer.NewAgent = func(conn *network.TCPConn) network.Agent {
+		tcpServer.NewAgent = func(conn *network2.TCPConn) network2.Agent {
 			a := &agent{conn: conn, gate: gate}
 			if gate.AgentChanRPC != nil {
 				gate.AgentChanRPC.Go("NewAgent", a)
@@ -84,7 +84,7 @@ func (gate *Gate) Run(closeSig chan bool) {
 func (gate *Gate) OnDestroy() {}
 
 type agent struct {
-	conn     network.Conn
+	conn     network2.Conn
 	gate     *Gate
 	userData interface{}
 }

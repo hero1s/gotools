@@ -2,9 +2,9 @@ package console
 
 import (
 	"fmt"
-	"github.com/hero1s/gotools/leaf/chanrpc"
-	"github.com/hero1s/gotools/leaf/conf"
 	"github.com/hero1s/gotools/log"
+	chanrpc2 "github.com/hero1s/gotools/tools/leaf/chanrpc"
+	conf2 "github.com/hero1s/gotools/tools/leaf/conf"
 	"os"
 	"path"
 	"runtime/pprof"
@@ -29,7 +29,7 @@ type Command interface {
 type ExternalCommand struct {
 	_name  string
 	_help  string
-	server *chanrpc.Server
+	server *chanrpc2.Server
 }
 
 func (c *ExternalCommand) name() string {
@@ -60,7 +60,7 @@ func (c *ExternalCommand) run(_args []string) string {
 
 // you must call the function before calling console.Init
 // goroutine not safe
-func Register(name string, help string, f interface{}, server *chanrpc.Server) {
+func Register(name string, help string, f interface{}, server *chanrpc2.Server) {
 	for _, c := range commands {
 		if c.name() == name {
 			log.Error("command %v is already registered", name)
@@ -144,7 +144,7 @@ func (c *CommandCPUProf) run(args []string) string {
 
 func profileName() string {
 	now := time.Now()
-	return path.Join(conf.ProfilePath,
+	return path.Join(conf2.ProfilePath,
 		fmt.Sprintf("%d%02d%02d_%02d_%02d_%02d",
 			now.Year(),
 			now.Month(),

@@ -104,14 +104,14 @@ reconnect:
 
 	wsConn := newWSConn(conn, client.PendingWriteNum, client.MaxMsgLen)
 	agent := client.NewAgent(wsConn)
-	agent.Run()
+	Run()
 
 	// cleanup
 	wsConn.Close()
 	client.Lock()
 	delete(client.conns, conn)
 	client.Unlock()
-	agent.OnClose()
+	OnClose()
 
 	if client.AutoReconnect {
 		time.Sleep(client.ConnectInterval)

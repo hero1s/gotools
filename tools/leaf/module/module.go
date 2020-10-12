@@ -1,8 +1,8 @@
 package module
 
 import (
-	"github.com/hero1s/gotools/leaf/conf"
 	"github.com/hero1s/gotools/log"
+	conf2 "github.com/hero1s/gotools/tools/leaf/conf"
 	"runtime"
 	"sync"
 )
@@ -58,8 +58,8 @@ func run(m *module) {
 func destroy(m *module) {
 	defer func() {
 		if r := recover(); r != nil {
-			if conf.LenStackBuf > 0 {
-				buf := make([]byte, conf.LenStackBuf)
+			if conf2.LenStackBuf > 0 {
+				buf := make([]byte, conf2.LenStackBuf)
 				l := runtime.Stack(buf, false)
 				log.Error("%v: %s", r, buf[:l])
 			} else {

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	"github.com/hero1s/gotools/leaf/chanrpc"
 	"github.com/hero1s/gotools/log"
+	chanrpc2 "github.com/hero1s/gotools/tools/leaf/chanrpc"
 	"math"
 	"reflect"
 )
@@ -22,7 +22,7 @@ type Processor struct {
 
 type MsgInfo struct {
 	msgType       reflect.Type
-	msgRouter     *chanrpc.Server
+	msgRouter     *chanrpc2.Server
 	msgHandler    MsgHandler
 	msgRawHandler MsgHandler
 }
@@ -68,7 +68,7 @@ func (p *Processor) Register(msg proto.Message) uint16 {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
-func (p *Processor) SetRouter(msg proto.Message, msgRouter *chanrpc.Server) {
+func (p *Processor) SetRouter(msg proto.Message, msgRouter *chanrpc2.Server) {
 	msgType := reflect.TypeOf(msg)
 	id, ok := p.msgID[msgType]
 	if !ok {

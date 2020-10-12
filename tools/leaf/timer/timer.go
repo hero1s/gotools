@@ -1,8 +1,8 @@
 package timer
 
 import (
-	"github.com/hero1s/gotools/leaf/conf"
 	"github.com/hero1s/gotools/log"
+	conf2 "github.com/hero1s/gotools/tools/leaf/conf"
 	"runtime"
 	"time"
 )
@@ -33,8 +33,8 @@ func (t *Timer) Cb() {
 	defer func() {
 		t.cb = nil
 		if r := recover(); r != nil {
-			if conf.LenStackBuf > 0 {
-				buf := make([]byte, conf.LenStackBuf)
+			if conf2.LenStackBuf > 0 {
+				buf := make([]byte, conf2.LenStackBuf)
 				l := runtime.Stack(buf, false)
 				log.Error("%v: %s", r, buf[:l])
 			} else {

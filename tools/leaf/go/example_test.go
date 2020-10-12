@@ -2,12 +2,11 @@ package g_test
 
 import (
 	"fmt"
-	"github.com/hero1s/gotools/leaf/go"
 	"time"
 )
 
 func Example() {
-	d := g.New(10)
+	d := New(10)
 
 	// go 1
 	var res int
@@ -36,7 +35,7 @@ func Example() {
 }
 
 func ExampleLinearContext() {
-	d := g.New(10)
+	d := New(10)
 
 	// parallel
 	d.Go(func() {

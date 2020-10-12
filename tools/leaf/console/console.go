@@ -2,22 +2,22 @@ package console
 
 import (
 	"bufio"
-	"github.com/hero1s/gotools/leaf/conf"
-	"github.com/hero1s/gotools/leaf/network"
+	conf2 "github.com/hero1s/gotools/tools/leaf/conf"
+	network2 "github.com/hero1s/gotools/tools/leaf/network"
 	"math"
 	"strconv"
 	"strings"
 )
 
-var server *network.TCPServer
+var server *network2.TCPServer
 
 func Init() {
-	if conf.ConsolePort == 0 {
+	if conf2.ConsolePort == 0 {
 		return
 	}
 
-	server = new(network.TCPServer)
-	server.Addr = "localhost:" + strconv.Itoa(conf.ConsolePort)
+	server = new(network2.TCPServer)
+	server.Addr = "localhost:" + strconv.Itoa(conf2.ConsolePort)
 	server.MaxConnNum = int(math.MaxInt32)
 	server.PendingWriteNum = 100
 	server.NewAgent = newAgent
@@ -32,11 +32,11 @@ func Destroy() {
 }
 
 type Agent struct {
-	conn   *network.TCPConn
+	conn   *network2.TCPConn
 	reader *bufio.Reader
 }
 
-func newAgent(conn *network.TCPConn) network.Agent {
+func newAgent(conn *network2.TCPConn) network2.Agent {
 	a := new(Agent)
 	a.conn = conn
 	a.reader = bufio.NewReader(conn)
@@ -45,8 +45,8 @@ func newAgent(conn *network.TCPConn) network.Agent {
 
 func (a *Agent) Run() {
 	for {
-		if conf.ConsolePrompt != "" {
-			a.conn.Write([]byte(conf.ConsolePrompt))
+		if conf2.ConsolePrompt != "" {
+			a.conn.Write([]byte(conf2.ConsolePrompt))
 		}
 
 		line, err := a.reader.ReadString('\n')
@@ -64,7 +64,7 @@ func (a *Agent) Run() {
 		}
 		var c Command
 		for _, _c := range commands {
-			if _c.name() == args[0] {
+			if name() == args[0] {
 				c = _c
 				break
 			}
@@ -73,7 +73,7 @@ func (a *Agent) Run() {
 			a.conn.Write([]byte("command not found, try `help` for help\r\n"))
 			continue
 		}
-		output := c.run(args[1:])
+		output := run(args[1:])
 		if output != "" {
 			a.conn.Write([]byte(output + "\r\n"))
 		}

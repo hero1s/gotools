@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/hero1s/gotools/leaf/chanrpc"
 	"github.com/hero1s/gotools/log"
+	chanrpc2 "github.com/hero1s/gotools/tools/leaf/chanrpc"
 	"reflect"
 )
 
@@ -15,7 +15,7 @@ type Processor struct {
 
 type MsgInfo struct {
 	msgType       reflect.Type
-	msgRouter     *chanrpc.Server
+	msgRouter     *chanrpc2.Server
 	msgHandler    MsgHandler
 	msgRawHandler MsgHandler
 }
@@ -54,7 +54,7 @@ func (p *Processor) Register(msg interface{}) string {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
-func (p *Processor) SetRouter(msg interface{}, msgRouter *chanrpc.Server) {
+func (p *Processor) SetRouter(msg interface{}, msgRouter *chanrpc2.Server) {
 	msgType := reflect.TypeOf(msg)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
 		log.Error("json message pointer required")

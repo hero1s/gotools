@@ -99,14 +99,14 @@ func (server *TCPServer) run() {
 		tcpConn := newTCPConn(conn, server.PendingWriteNum, server.msgParser)
 		agent := server.NewAgent(tcpConn)
 		go func() {
-			agent.Run()
+			Run()
 
 			// cleanup
 			tcpConn.Close()
 			server.mutexConns.Lock()
 			delete(server.conns, conn)
 			server.mutexConns.Unlock()
-			agent.OnClose()
+			OnClose()
 
 			server.wgConns.Done()
 		}()

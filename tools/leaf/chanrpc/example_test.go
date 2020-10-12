@@ -2,12 +2,11 @@ package chanrpc_test
 
 import (
 	"fmt"
-	"github.com/hero1s/gotools/leaf/chanrpc"
 	"sync"
 )
 
 func Example() {
-	s := chanrpc.NewServer(10)
+	s := NewServer(10)
 
 	var wg sync.WaitGroup
 	wg.Add(1)

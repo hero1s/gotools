@@ -2,12 +2,11 @@ package timer_test
 
 import (
 	"fmt"
-	"github.com/hero1s/gotools/leaf/timer"
 	"time"
 )
 
 func ExampleTimer() {
-	d := timer.NewDispatcher(10)
+	d := NewDispatcher(10)
 
 	// timer 1
 	d.AfterFunc(1, func() {
@@ -28,7 +27,7 @@ func ExampleTimer() {
 }
 
 func ExampleCronExpr() {
-	cronExpr, err := timer.NewCronExpr("0 * * * *")
+	cronExpr, err := NewCronExpr("0 * * * *")
 	if err != nil {
 		return
 	}
@@ -44,16 +43,16 @@ func ExampleCronExpr() {
 }
 
 func ExampleCron() {
-	d := timer.NewDispatcher(10)
+	d := NewDispatcher(10)
 
 	// cron expr
-	cronExpr, err := timer.NewCronExpr("* * * * * *")
+	cronExpr, err := NewCronExpr("* * * * * *")
 	if err != nil {
 		return
 	}
 
 	// cron
-	var c *timer.Cron
+	var c *Cron
 	c = d.CronFunc(cronExpr, func() {
 		fmt.Println("My name is Leaf")
 		c.Stop()

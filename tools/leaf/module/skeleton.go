@@ -1,11 +1,11 @@
 package module
 
 import (
-	"github.com/hero1s/gotools/leaf/chanrpc"
-	"github.com/hero1s/gotools/leaf/console"
-	"github.com/hero1s/gotools/leaf/go"
-	"github.com/hero1s/gotools/leaf/timer"
 	"github.com/hero1s/gotools/log"
+	chanrpc2 "github.com/hero1s/gotools/tools/leaf/chanrpc"
+	console2 "github.com/hero1s/gotools/tools/leaf/console"
+	"github.com/hero1s/gotools/tools/leaf/go"
+	timer2 "github.com/hero1s/gotools/tools/leaf/timer"
 	"time"
 )
 
@@ -13,12 +13,12 @@ type Skeleton struct {
 	GoLen              int
 	TimerDispatcherLen int
 	AsynCallLen        int
-	ChanRPCServer      *chanrpc.Server
+	ChanRPCServer      *chanrpc2.Server
 	g                  *g.Go
-	dispatcher         *timer.Dispatcher
-	client             *chanrpc.Client
-	server             *chanrpc.Server
-	commandServer      *chanrpc.Server
+	dispatcher         *timer2.Dispatcher
+	client             *chanrpc2.Client
+	server             *chanrpc2.Server
+	commandServer      *chanrpc2.Server
 }
 
 func (s *Skeleton) Init() {
@@ -33,14 +33,14 @@ func (s *Skeleton) Init() {
 	}
 
 	s.g = g.New(s.GoLen)
-	s.dispatcher = timer.NewDispatcher(s.TimerDispatcherLen)
-	s.client = chanrpc.NewClient(s.AsynCallLen)
+	s.dispatcher = timer2.NewDispatcher(s.TimerDispatcherLen)
+	s.client = chanrpc2.NewClient(s.AsynCallLen)
 	s.server = s.ChanRPCServer
 
 	if s.server == nil {
-		s.server = chanrpc.NewServer(0)
+		s.server = chanrpc2.NewServer(0)
 	}
-	s.commandServer = chanrpc.NewServer(0)
+	s.commandServer = chanrpc2.NewServer(0)
 }
 
 func (s *Skeleton) Run(closeSig chan bool) {
@@ -68,7 +68,7 @@ func (s *Skeleton) Run(closeSig chan bool) {
 	}
 }
 
-func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer.Timer {
+func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer2.Timer {
 	if s.TimerDispatcherLen == 0 {
 		log.Critical("invalid TimerDispatcherLen")
 		panic("invalid TimerDispatcherLen")
@@ -77,7 +77,7 @@ func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer.Timer {
 	return s.dispatcher.AfterFunc(d, cb)
 }
 
-func (s *Skeleton) CronFunc(cronExpr *timer.CronExpr, cb func()) *timer.Cron {
+func (s *Skeleton) CronFunc(cronExpr *timer2.CronExpr, cb func()) *timer2.Cron {
 	if s.TimerDispatcherLen == 0 {
 		log.Critical("invalid TimerDispatcherLen")
 		panic("invalid TimerDispatcherLen")
@@ -104,7 +104,7 @@ func (s *Skeleton) NewLinearContext() *g.LinearContext {
 	return s.g.NewLinearContext()
 }
 
-func (s *Skeleton) AsynCall(server *chanrpc.Server, id interface{}, args ...interface{}) {
+func (s *Skeleton) AsynCall(server *chanrpc2.Server, id interface{}, args ...interface{}) {
 	if s.AsynCallLen == 0 {
 		log.Critical("invalid AsynCallLen")
 		panic("invalid AsynCallLen")
@@ -124,5 +124,5 @@ func (s *Skeleton) RegisterChanRPC(id interface{}, f interface{}) {
 }
 
 func (s *Skeleton) RegisterCommand(name string, help string, f interface{}) {
-	console.Register(name, help, f, s.commandServer)
+	console2.Register(name, help, f, s.commandServer)
 }

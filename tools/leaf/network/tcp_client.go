@@ -102,14 +102,14 @@ reconnect:
 
 	tcpConn := newTCPConn(conn, client.PendingWriteNum, client.msgParser)
 	agent := client.NewAgent(tcpConn)
-	agent.Run()
+	Run()
 
 	// cleanup
 	tcpConn.Close()
 	client.Lock()
 	delete(client.conns, conn)
 	client.Unlock()
-	agent.OnClose()
+	OnClose()
 
 	if client.AutoReconnect {
 		time.Sleep(client.ConnectInterval)

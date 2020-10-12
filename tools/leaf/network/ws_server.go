@@ -66,14 +66,14 @@ func (handler *WSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	wsConn := newWSConn(conn, handler.pendingWriteNum, handler.maxMsgLen)
 	agent := handler.newAgent(wsConn)
-	agent.Run()
+	Run()
 
 	// cleanup
 	wsConn.Close()
 	handler.mutexConns.Lock()
 	delete(handler.conns, conn)
 	handler.mutexConns.Unlock()
-	agent.OnClose()
+	OnClose()
 }
 
 func (server *WSServer) Start() {
