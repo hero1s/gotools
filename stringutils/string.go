@@ -1,17 +1,12 @@
 package stringutils
 
 import (
-	"encoding/json"
-	"github.com/hero1s/gotools/log"
 	"github.com/zheng-ji/goSnowFlake"
 	"net/smtp"
 	"regexp"
 	"strconv"
 	"strings"
-)
-
-const (
-	regular = "^1[3|4|5|7|8][0-9]{9}$"
+	"unicode/utf8"
 )
 
 /*
@@ -105,23 +100,25 @@ func RemoveDuplicatesAndEmpty(a []string) (ret []string) {
 	return
 }
 
-//判断是否手机号
-func CheckPhoneNum(mobileNum string) bool {
-	reg := regexp.MustCompile(regular)
-	return reg.MatchString(mobileNum)
+func FilterEmoji(content string) string {
+	newContent := ""
+	for _, value := range content {
+		_, size := utf8.DecodeRuneInString(string(value))
+		if size <= 3 {
+			newContent += string(value)
+		} else {
+			newContent += "*"
+		}
+	}
+	return newContent
 }
 
-//json数据转换
-func ChangeJsonStruct(from, to interface{}) error {
-	str, err := json.Marshal(from)
-	if err != nil {
-		log.Error(err.Error())
-		return err
+//判断是否为纯数字
+func IsNumber(number string) bool {
+	for _, v := range number {
+		if '9' < v || v < '0' {
+			return false
+		}
 	}
-	err = json.Unmarshal(str, &to)
-	if err != nil {
-		return err
-	}
-	return nil
+	return true
 }
-

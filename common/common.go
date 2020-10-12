@@ -1,42 +1,14 @@
 package common
 
 import (
+	"encoding/json"
+	"github.com/hero1s/gotools/log"
 	"math/rand"
 	"reflect"
 	"strconv"
 	"time"
-	"unicode/utf8"
+
 )
-
-type AccessLimitConf struct {
-	Frequency  int64 `json:"frequency"`
-	ExpireTime int64 `json:"expire_time"`
-}
-
-var Al AccessLimitConf //访问限速配置
-
-func FilterEmoji(content string) string {
-	newContent := ""
-	for _, value := range content {
-		_, size := utf8.DecodeRuneInString(string(value))
-		if size <= 3 {
-			newContent += string(value)
-		} else {
-			newContent += "*"
-		}
-	}
-	return newContent
-}
-
-//判断是否为纯数字
-func IsNumber(number string) bool {
-	for _, v := range number {
-		if '9' < v || v < '0' {
-			return false
-		}
-	}
-	return true
-}
 
 func RandomString(length int64) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
@@ -114,6 +86,7 @@ func ChangeStructPointToJsonMap(p interface{}) map[string]interface{} {
 	}
 	return data
 }
+
 func ChangeStructToJsonMap(p interface{}) map[string]interface{} {
 	data := map[string]interface{}{}
 	v := reflect.ValueOf(p)
@@ -126,3 +99,16 @@ func ChangeStructToJsonMap(p interface{}) map[string]interface{} {
 	return data
 }
 
+//json数据转换
+func ChangeJsonStruct(from, to interface{}) error {
+	str, err := json.Marshal(from)
+	if err != nil {
+		log.Error(err.Error())
+		return err
+	}
+	err = json.Unmarshal(str, &to)
+	if err != nil {
+		return err
+	}
+	return nil
+}

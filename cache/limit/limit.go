@@ -1,4 +1,4 @@
-package common
+package limit
 
 import (
 	"fmt"
@@ -6,6 +6,13 @@ import (
 	"github.com/hero1s/gotools/log"
 	"time"
 )
+
+type AccessLimitConf struct {
+	Frequency  int64 `json:"frequency"`
+	ExpireTime int64 `json:"expire_time"`
+}
+
+var Al AccessLimitConf //访问限速配置
 
 /*
  *desc:用于访问次数限制
@@ -39,7 +46,7 @@ func AccessLimit(key string, frequency int64, expireTime int64, isGobal bool) bo
 			ret := cache.Redis.TTL(key)
 			if ret.Val() > 0 {
 				cache.RedisCache.Expire(key, time.Duration(expireTime)*time.Second-ret.Val())
-			}else{
+			} else {
 				cache.RedisCache.Expire(key, time.Duration(expireTime)*time.Second)
 			}
 			return true
