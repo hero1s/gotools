@@ -1,52 +1,52 @@
 package proxy
 
 import (
-	"io"
+	"github.com/hero1s/gotools/log"
 	"net/http"
-	"sync"
+	"net/http/httputil"
+	"net/url"
+	"strings"
 )
 
-var srv *Service
-
-type ProxyHandler struct {
-	c        *Config
-	handlers map[string]http.Handler
-	mu       sync.Mutex
-}
-
-func (p *ProxyHandler) Handle(path string, handler http.Handler) {
-	p.mu.Lock()
-	p.handlers[path] = handler
-	p.mu.Unlock()
-}
-
-func (p *ProxyHandler) ListenAndServe() error {
-	http.Handle("/", p)
-
-	if len(p.handlers) > 0 {
-		for path, handler := range p.handlers {
-			http.Handle(path, handler)
+func ListenAndServe(c *Config) error {
+	for i := 0; i < len(c.ProxyHost); i++ {
+		up := c.ProxyHost[i]
+		u, err := url.Parse(up.Upstream)
+		log.Notice("{%s} => {%s}\r\n", up.Path, up.Upstream)
+		if err != nil {
+			log.Alert(err.Error())
 		}
+		rp := httputil.NewSingleHostReverseProxy(u)
+		http.HandleFunc(up.Path, func(writer http.ResponseWriter, request *http.Request) {
+			if up.UpHost != "" {
+				request.Host = up.UpHost
+			} else {
+				request.Host = u.Host
+			}
+			if up.TrimPath {
+				request.URL.Path = strings.TrimPrefix(request.URL.Path, up.Path)
+			}
+			if up.IsAuth {
+				auth_value := request.Header.Get("auth_key")
+				if auth_value != up.AuthKey {
+					writeUnAuthorized(writer)
+					return
+				}
+			}
+			rp.ServeHTTP(writer, request)
+		})
 	}
-
 	// listen and serve
-	if err := http.ListenAndServe(p.c.ServerPort, nil); err != nil {
+	log.Notice("proxy listen port:%v", c.ServerPort)
+	if err := http.ListenAndServe(c.ServerPort, nil); err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ct := r.Header.Get(HEADER_CONTENT_TYPE)
-	if ct != "" {
-		w.Header().Set(HEADER_CONTENT_TYPE, ct)
-	}
-	defer r.Body.Close()
-	err := r.ParseForm()
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, err.Error())
-		return
-	}
-	srv.Proxy(r.Context(), w, r)
+func writeUnAuthorized(writer http.ResponseWriter) {
+	writer.Header().Add("Content-Type", "Application/json")
+	writer.WriteHeader(http.StatusUnauthorized)
+	writer.Write([]byte("{\"status\":\"un-authorized\"}"))
 }

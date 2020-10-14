@@ -1,26 +1,34 @@
 package proxy
 
-type SchemaType string
-
-const (
-	SchemaHTTP  SchemaType = "http://"
-	SchemaHTTPS SchemaType = "https://"
-
-	HTTP_METHOD_GET  = "GET"
-	HTTP_METHOD_POST = "POST"
-
-	CONTENT_TYPE_JSON = "application/json"
-	CONTENT_TYPE_FORM = "application/x-www-form-urlencoded"
-	CONTENT_TYPE_XML  = "application/xml"
-
-	HEADER_CONTENT_TYPE = "Content-Type"
-	HEADER_CONTENT_KEY  = "key"
+import (
+	"encoding/json"
+	"io/ioutil"
 )
 
 // 配置文件
 type Config struct {
-	ProxySchema SchemaType        // SchemaHTTP or SchemaHTTPS
-	ProxyHost   map[string]string // 转发到的接口 path -->> Host
-	ServerPort  string            // 代理转发服务启动的端口
-	Key         string            // 简单的校验Key
+	ProxyHost  []Upstream `json:"proxy_host"`  //代理配置
+	ServerPort string     `json:"server_port"` // 代理转发服务启动的端口
+}
+
+type Upstream struct {
+	Upstream string `json:"upstream"`  //远端地址
+	UpHost   string `json:"up_host"`   //代理地址
+	Path     string `json:"path"`      //转发路径
+	TrimPath bool   `json:"trim_path"` //移除路径
+	IsAuth   bool   `json:"is_auth"`   //是否鉴权
+	AuthKey  string `json:"auth_key"`  //简单的校验Key
+}
+
+func LoadConfig(fileName string) (Config, error) {
+	var cfg Config
+	data, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return cfg, err
+	}
+	err = json.Unmarshal(data, &cfg)
+	if err != nil {
+		return cfg, err
+	}
+	return cfg, nil
 }
