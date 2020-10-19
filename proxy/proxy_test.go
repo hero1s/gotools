@@ -6,7 +6,6 @@ import (
 )
 
 func TestService_Proxy(t *testing.T) {
-	log.InitLog("dev")
 	cfg, err := LoadConfig("./config.json")
 	if err != nil {
 		log.Alert("reload config Err：", err)

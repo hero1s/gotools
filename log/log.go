@@ -15,34 +15,41 @@ func isPathExist(path string) bool {
 	return true
 }
 
+func curLogger() *logs.BeeLogger {
+	if DefaultLog == nil {
+		InitLog("dev")
+	}
+	return DefaultLog
+}
+
 func Emergency(format string, v ...interface{}) {
-	DefaultLog.Emergency(format, v...)
+	curLogger().Emergency(format, v...)
 }
 
 func Alert(format string, v ...interface{}) {
-	DefaultLog.Alert(format, v...)
+	curLogger().Alert(format, v...)
 }
 
 func Critical(format string, v ...interface{}) {
-	DefaultLog.Critical(format, v...)
+	curLogger().Critical(format, v...)
 }
 
 func Error(format string, v ...interface{}) {
-	DefaultLog.Error(format, v...)
+	curLogger().Error(format, v...)
 }
 
 func Warning(format string, v ...interface{}) {
-	DefaultLog.Warning(format, v...)
+	curLogger().Warning(format, v...)
 }
 
 func Notice(format string, v ...interface{}) {
-	DefaultLog.Notice(format, v...)
+	curLogger().Notice(format, v...)
 }
 
 func Info(format string, v ...interface{}) {
-	DefaultLog.Info(format, v...)
+	curLogger().Info(format, v...)
 }
 
 func Debug(format string, v ...interface{}) {
-	DefaultLog.Debug(format, v...)
+	curLogger().Debug(format, v...)
 }
