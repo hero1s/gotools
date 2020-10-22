@@ -8,6 +8,7 @@ require (
 	github.com/astaxie/beego v1.12.2
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/bsm/redislock v0.5.0
+	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/denverdino/aliyungo v0.0.0-20191128015008-acd8035bbb1d
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gansidui/geohash v0.0.0-20141019080235-ebe5ba447f34
